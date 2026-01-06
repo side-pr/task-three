@@ -2,7 +2,20 @@
   "permissions": {
     "allow": [
       "Bash(echo:*)",
-      "Bash(set)"
+      "Bash(set)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(git mv:*)",
+      "Bash(cp:*)",
+      "Bash(rm:*)",
+      "Bash(npx:*)",
+      "Bash(yarn install)",
+      "Bash(tree:*)",
+      "Bash(yarn dev)",
+      "Bash(yarn dev:backend)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)",
+      "Bash(git rm:*)"
     ]
   }
 }

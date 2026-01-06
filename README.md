@@ -1,4 +1,69 @@
-Next.js template
+# Task Three - Daily Task Scheduler
+
+Yarn Workspaces를 사용한 모노레포 프로젝트
+
+## 프로젝트 구조
+
+```
+task-three/
+├── apps/
+│   ├── frontend/    # Next.js 앱
+│   └── backend/     # NestJS 앱
+├── packages/
+│   └── shared/      # 공통 타입 및 유틸리티
+└── package.json     # 루트 워크스페이스 설정
+```
+
+## 시작하기
+
+### 설치
+
+```bash
+yarn install
+```
+
+### 개발 서버 실행
+
+```bash
+# Frontend만 실행 (포트 3000)
+yarn dev
+
+# Backend만 실행 (포트 3000)
+yarn dev:backend
+
+# Frontend와 Backend 동시 실행
+yarn dev:all
+```
+
+### 빌드
+
+```bash
+# Frontend 빌드
+yarn build
+
+# Backend 빌드
+yarn build:backend
+
+# 모든 앱 빌드
+yarn build:all
+```
+
+### 테스트
+
+```bash
+# 모든 워크스페이스 테스트 실행
+yarn test
+```
+
+## 워크스페이스
+
+- **@task-three/frontend**: Next.js 기반 프론트엔드 앱
+- **@task-three/backend**: NestJS 기반 백엔드 API
+- **@task-three/shared**: Frontend와 Backend에서 공유하는 타입 및 유틸리티
+
+---
+
+# 기능 명세
 메인 페이지
 메인 페이지에는 다음 세 영역이 존재한다.
 날짜(일) 선택 영역
