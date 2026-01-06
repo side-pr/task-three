@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+}
+/**
+예시로 남겨 놓음
+*/
+@theme inline {
+  --color-indigo: #023e99;
+  --color-informative: #2563eb;
+  --color-negative: #dc2626;
+  --color-notice: #fbbf24;
+  --color-positive: #22c55e;
+  --color-fuchsia: #fd28ec;
+
+  /* font */
+  --font-pretendard: "Pretendard", sans-serif;
+
+  /* text */
+  --text-heading: 24px;
+  --text-heading--line-height: 30px;
+}
+
+@media (prefers-color-scheme: dark) {
+}
+
+html,
+root,
+body {
+  height: 100%;
+  min-height: 100%;
+}
