@@ -1,25 +1,20 @@
-import { Controller, Get, Patch, Delete, Param, Body } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { TaskControllerDocs } from './docs/task.controller.docs';
 import { TaskResponseDto, UpdateTaskDto } from 'src/dto/task.dto';
 
 @Controller('tasks')
-export class TaskController {
-  @Get()
+export class TaskController extends TaskControllerDocs {
   getTasks(): Promise<TaskResponseDto[]> {
     // TODO: Implement
     throw new Error('Not implemented');
   }
 
-  @Patch(':id')
-  updateTask(
-    @Param('id') id: string,
-    @Body() updateTaskDto: UpdateTaskDto,
-  ): Promise<TaskResponseDto> {
+  updateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<TaskResponseDto> {
     // TODO: Implement
     throw new Error('Not implemented');
   }
 
-  @Delete(':id')
-  deleteTask(@Param('id') id: string): Promise<void> {
+  deleteTask(id: string): Promise<void> {
     // TODO: Implement
     throw new Error('Not implemented');
   }
