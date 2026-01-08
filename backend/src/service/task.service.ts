@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TaskCreateRequestDto } from 'src/dto/task-create-request.dto';
+import { TaskCreateRequest } from 'src/dto/task-create-request.dto';
+import { TaskDetailResponse } from 'src/dto/task-detail-response.dto';
 import { Task } from 'src/entities/task.entity';
 import { Repository } from 'typeorm';
 
@@ -23,11 +24,22 @@ export class TaskService {
   //   console.log(tasks);
   //   return [];
   // }
-  async create(taskCreateRequestDto: TaskCreateRequestDto) {
+
+  async create(taskCreateRequestDto: TaskCreateRequest) {
     const task = this.taskRepository.create(taskCreateRequestDto);
     console.log('task', task);
     console.log('taskCreateRequestDto', taskCreateRequestDto);
-    await this.taskRepository.save(task);
-    return task.id;
+    const savedTask = await this.taskRepository.save(task);
+    return savedTask.id;
+  }
+
+  async getTaskDetail(taskId: number): Promise<TaskDetailResponse> {
+    const task = await this.taskRepository.findOne({
+      where: { id: taskId },
+    });
+    if (!task) {
+      throw new NotFoundException('할 일을 찾을 수 없습니다.');
+    }
+    return new TaskDetailResponse(task.id, task.name);
   }
 }
