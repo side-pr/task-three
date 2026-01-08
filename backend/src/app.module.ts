@@ -6,6 +6,8 @@ import { ScheduleController } from './controller/schedule.controller';
 import { SnakeNamingStrategy } from './config/naming-strategy';
 import { TaskService } from './service/task.service';
 import { Task } from './entities/task.entity';
+import { ScheduleService } from 'src/service/schedule.service';
+import { Schedule } from './entities/schedule.entity';
 
 @Module({
   imports: [
@@ -29,9 +31,9 @@ import { Task } from './entities/task.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Task]),
+    TypeOrmModule.forFeature([Task, Schedule]),
   ],
   controllers: [TaskController, ScheduleController],
-  providers: [TaskService],
+  providers: [TaskService, ScheduleService],
 })
 export class AppModule {}
