@@ -14,9 +14,6 @@ export class Task extends BaseModel {
   @Column({ type: 'time' })
   endTime: string;
 
-  @Column({ type: 'date' })
-  targetDate: string;
-
   @Column()
   isCompleted: boolean;
 
