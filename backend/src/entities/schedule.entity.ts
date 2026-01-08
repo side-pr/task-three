@@ -17,7 +17,7 @@ export class Schedule extends BaseModel {
   @Column({ type: 'date' })
   targetDate: string;
 
-  @Column({ type: 'tinyint' })
+  @Column({ type: 'smallint' })
   order: number;
 
   @OneToOne(() => Task, { nullable: true })
