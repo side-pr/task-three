@@ -8,13 +8,7 @@ export class Task extends BaseModel {
   @Column()
   name: string;
 
-  @Column({ type: 'time' })
-  startTime: string;
-
-  @Column({ type: 'time' })
-  endTime: string;
-
-  @Column()
+  @Column({ default: false })
   isCompleted: boolean;
 
   @ManyToOne(() => Member, (member) => member.id)

@@ -1,48 +1,27 @@
-import { Controller, HttpStatus } from '@nestjs/common';
+import { Controller, HttpStatus, Post } from '@nestjs/common';
 import { TaskResponseDto, UpdateTaskDto } from 'src/dto/task.dto';
 import { Body, Delete, Get, Param, Patch } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { TaskService } from 'src/service/task.service';
+import { TaskCreateRequestDto } from 'src/dto/task-create-request.dto';
+import { ServiceApiResponse } from 'src/config/api-response';
 
 @Controller('tasks')
 @ApiTags('tasks')
 export class TaskController {
-  @Get()
-  @ApiOperation({ summary: 'Get all tasks' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Return all tasks',
-    type: [TaskResponseDto],
-  })
-  getTasks(): Promise<TaskResponseDto[]> {
-    // TODO: Implement
-    throw new Error('Not implemented');
-  }
+  constructor(private readonly taskService: TaskService) {}
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update a task' })
-  @ApiParam({ name: 'id', description: 'Task ID' })
+  @Post()
+  @ApiOperation({ summary: '할 일 생성' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Task updated successfully',
     type: TaskResponseDto,
   })
-  updateTask(
-    id: string,
-    updateTaskDto: UpdateTaskDto,
-  ): Promise<TaskResponseDto> {
-    // TODO: Implement
-    throw new Error('Not implemented');
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete a task' })
-  @ApiParam({ name: 'id', description: 'Task ID' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Task deleted successfully',
-  })
-  deleteTask(id: string): Promise<void> {
-    // TODO: Implement
-    throw new Error('Not implemented');
+  async createTask(
+    @Body() taskCreateRequestDto: TaskCreateRequestDto,
+  ): Promise<ServiceApiResponse<{ taskId: number }>> {
+    const taskId = await this.taskService.create(taskCreateRequestDto);
+    return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
   }
 }

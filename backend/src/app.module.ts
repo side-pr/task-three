@@ -3,6 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskController } from './controller/task.controller';
 import { ScheduleController } from './controller/schedule.controller';
+import { SnakeNamingStrategy } from './config/naming-strategy';
+import { TaskService } from './service/task.service';
+import { Task } from './entities/task.entity';
 
 @Module({
   imports: [
@@ -22,11 +25,13 @@ import { ScheduleController } from './controller/schedule.controller';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: configService.get('TYPEORM_SYNCHRONIZE') === 'true',
         logging: configService.get('TYPEORM_LOGGING') === 'true',
+        namingStrategy: new SnakeNamingStrategy(),
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([Task]),
   ],
   controllers: [TaskController, ScheduleController],
-  providers: [],
+  providers: [TaskService],
 })
 export class AppModule {}
