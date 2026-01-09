@@ -42,4 +42,14 @@ export class TaskService {
     }
     return new TaskDetailResponse(task.id, task.name);
   }
+
+  async deleteTask(taskId: number): Promise<void> {
+    const task = await this.taskRepository.findOne({
+      where: { id: taskId },
+    });
+    if (!task) {
+      throw new NotFoundException('할 일을 찾을 수 없습니다.');
+    }
+    await this.taskRepository.delete(taskId);
+  }
 }

@@ -30,13 +30,25 @@ export class UpdateScheduleDto {
   @ApiProperty({ description: 'Schedule name', required: false })
   name?: string;
 
-  @ApiProperty({ description: 'Start time', example: '09:00:00', required: false })
+  @ApiProperty({
+    description: 'Start time',
+    example: '09:00:00',
+    required: false,
+  })
   startTime?: string;
 
-  @ApiProperty({ description: 'End time', example: '17:00:00', required: false })
+  @ApiProperty({
+    description: 'End time',
+    example: '17:00:00',
+    required: false,
+  })
   endTime?: string;
 
-  @ApiProperty({ description: 'Target date', example: '2026-01-08', required: false })
+  @ApiProperty({
+    description: 'Target date',
+    example: '2026-01-08',
+    required: false,
+  })
   targetDate?: string;
 
   @ApiProperty({ description: 'Display order', required: false })

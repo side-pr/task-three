@@ -37,4 +37,17 @@ export class TaskController {
     const taskDetailResponse = await this.taskService.getTaskDetail(taskId);
     return ServiceApiResponse.success(HttpStatus.OK, taskDetailResponse);
   }
+
+  @Get(':taskId')
+  @ApiOperation({ summary: '할 일 상세 조회' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '할 일 상세 조회 성공',
+  })
+  async deleteTask(
+    @Param('taskId') taskId: number,
+  ): Promise<ServiceApiResponse<void>> {
+    await this.taskService.deleteTask(taskId);
+    return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
+  }
 }
