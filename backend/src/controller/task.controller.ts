@@ -1,10 +1,11 @@
-import { Controller, Delete, HttpStatus, Post } from '@nestjs/common';
+import { Controller, Delete, HttpStatus, Post, Put } from '@nestjs/common';
 import { Body, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TaskService } from 'src/service/task.service';
 import { TaskCreateRequest } from 'src/dto/task-create-request.dto';
 import { ServiceApiResponse } from 'src/config/api-response';
 import { TaskDetailResponse } from 'src/dto/task-detail-response.dto';
+import { TaskUpdateRequest } from 'src/dto/task-update-request.dto';
 
 @Controller('tasks')
 @ApiTags('tasks')
@@ -21,7 +22,21 @@ export class TaskController {
   async createTask(
     @Body() taskCreateRequestDto: TaskCreateRequest,
   ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    const taskId = await this.taskService.create(taskCreateRequestDto);
+    const taskId = await this.taskService.createTask(taskCreateRequestDto);
+    return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
+  }
+
+  @Put(':taskId')
+  @ApiOperation({ summary: '할 일 수정' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '할 일 수정 성공',
+  })
+  async updateTask(
+    @Param('taskId') taskId: number,
+    @Body() taskUpdateRequestDto: TaskUpdateRequest,
+  ): Promise<ServiceApiResponse<{ taskId: number }>> {
+    await this.taskService.updateTask(taskId, taskUpdateRequestDto);
     return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
   }
 

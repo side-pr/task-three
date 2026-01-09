@@ -25,12 +25,24 @@ export class TaskService {
   //   return [];
   // }
 
-  async create(taskCreateRequestDto: TaskCreateRequest) {
+  async createTask(taskCreateRequestDto: TaskCreateRequest) {
     const task = this.taskRepository.create(taskCreateRequestDto);
-    console.log('task', task);
-    console.log('taskCreateRequestDto', taskCreateRequestDto);
     const savedTask = await this.taskRepository.save(task);
     return savedTask.id;
+  }
+
+  async updateTask(
+    taskId: number,
+    taskCreateRequestDto: TaskCreateRequest,
+  ): Promise<void> {
+    const task = await this.taskRepository.findOne({
+      where: { id: taskId },
+    });
+    if (!task) {
+      throw new NotFoundException('할 일을 찾을 수 없습니다.');
+    }
+    task.name = taskCreateRequestDto.name;
+    await this.taskRepository.save(task);
   }
 
   async getTaskDetail(taskId: number): Promise<TaskDetailResponse> {
