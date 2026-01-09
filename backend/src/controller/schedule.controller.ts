@@ -6,16 +6,33 @@ import {
   Param,
   Body,
   Put,
+  Get,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ServiceApiResponse } from 'src/config/api-response';
 import { ScheduleCreateRequest } from 'src/dto/schedule-create-request.dto';
+import { ScheduleDetailResponse } from 'src/dto/schedule-detail-response.dto';
 import { ScheduleService } from 'src/service/schedule.service';
 
 @ApiTags('schedules')
 @Controller('schedules')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
+
+  @Get(':taskId')
+  @ApiOperation({ summary: '할 일 상세 조회' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '할 일 상세 조회 성공',
+    type: ServiceApiResponse<ScheduleDetailResponse>,
+  })
+  async getDetail(
+    @Param('scheduleId') scheduleId: number,
+  ): Promise<ServiceApiResponse<ScheduleDetailResponse>> {
+    const scheduleDetailResponse =
+      await this.scheduleService.getDetail(scheduleId);
+    return ServiceApiResponse.success(HttpStatus.OK, scheduleDetailResponse);
+  }
 
   @Post()
   @ApiOperation({ summary: '스케줄 등록' })

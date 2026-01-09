@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScheduleCreateRequest } from 'src/dto/schedule-create-request.dto';
+import { ScheduleDetailResponse } from 'src/dto/schedule-detail-response.dto';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Task } from 'src/entities/task.entity';
 import { Repository } from 'typeorm';
@@ -34,6 +35,32 @@ export class ScheduleService {
 
     const savedSchedule = await this.scheduleRepository.save(schedule);
     return savedSchedule.id;
+  }
+
+  async getDetail(scheduleId: number): Promise<ScheduleDetailResponse> {
+    const schedule = await this.scheduleRepository.findOne({
+      where: { id: scheduleId },
+    });
+    //상세조회부터
+    if (!schedule) {
+      throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
+    }
+    const task = await this.taskRepository.findOne({
+      where: { id: schedule.task?.id },
+    });
+    if (!task) {
+      throw new NotFoundException(
+        `Task with id ${schedule.task?.id} not found`,
+      );
+    }
+
+    return new ScheduleDetailResponse(
+      schedule.id,
+      task.id,
+      task.name,
+      schedule.startTime,
+      schedule.endTime,
+    );
   }
 
   async moveToTaskList(scheduleId: number): Promise<void> {

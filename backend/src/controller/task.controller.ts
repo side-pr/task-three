@@ -1,6 +1,6 @@
 import { Controller, Delete, HttpStatus, Post, Put } from '@nestjs/common';
 import { Body, Get, Param } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TaskService } from 'src/service/task.service';
 import { TaskCreateRequest } from 'src/dto/task-create-request.dto';
 import { ServiceApiResponse } from 'src/config/api-response';
