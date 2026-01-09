@@ -19,7 +19,8 @@
       "Bash(yarn add:*)",
       "Bash(docker-compose up:*)",
       "Bash(docker compose:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }

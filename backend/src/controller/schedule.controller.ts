@@ -5,6 +5,7 @@ import {
   Delete,
   Param,
   Body,
+  Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ServiceApiResponse } from 'src/config/api-response';
@@ -30,6 +31,33 @@ export class ScheduleController {
     return ServiceApiResponse.success(HttpStatus.CREATED, { scheduleId });
   }
 
+  @Put(':scheduleId')
+  @ApiOperation({ summary: '스케줄 내용 수정' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: '스케줄 수정 성공',
+    type: ServiceApiResponse<{ scheduleId: number }>,
+  })
+  async updateSchedule(
+    @Body() scheduleCreateRequest: ScheduleCreateRequest,
+  ): Promise<ServiceApiResponse<{ scheduleId: number }>> {
+    const scheduleId = await this.scheduleService.create(scheduleCreateRequest);
+    return ServiceApiResponse.success(HttpStatus.CREATED, { scheduleId });
+  }
+
+  @Put(':scheduleId')
+  @ApiOperation({ summary: '스케줄 완료' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '스케줄 완료 성공',
+  })
+  async completeSchedule(
+    @Param('scheduleId') scheduleId: number,
+  ): Promise<ServiceApiResponse<{ scheduleId: number }>> {
+    await this.scheduleService.complete(scheduleId);
+    return ServiceApiResponse.success(HttpStatus.OK);
+  }
+
   @Delete(':scheduleId')
   @ApiOperation({ summary: '스케줄을 할일 목록으로 이동' })
   @ApiResponse({
@@ -41,5 +69,18 @@ export class ScheduleController {
   ): Promise<ServiceApiResponse<void>> {
     await this.scheduleService.moveToTaskList(scheduleId);
     return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
+  }
+
+  @Delete(':scheduleId')
+  @ApiOperation({ summary: '스케줄 완료 취소' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '스케줄 완료 취소 성공',
+  })
+  async cancelComplete(
+    @Param('scheduleId') scheduleId: number,
+  ): Promise<ServiceApiResponse<{ scheduleId: number }>> {
+    await this.scheduleService.cancelComplete(scheduleId);
+    return ServiceApiResponse.success(HttpStatus.OK);
   }
 }

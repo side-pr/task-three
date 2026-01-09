@@ -47,4 +47,27 @@ export class ScheduleService {
 
     await this.scheduleRepository.remove(schedule);
   }
+  async complete(scheduleId: number): Promise<void> {
+    const schedule = await this.scheduleRepository.findOne({
+      where: { id: scheduleId },
+    });
+
+    if (!schedule) {
+      throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
+    }
+
+    schedule.isCompleted = true;
+    await this.scheduleRepository.save(schedule);
+  }
+
+  async cancelComplete(scheduleId: number): Promise<void> {
+    const schedule = await this.scheduleRepository.findOne({
+      where: { id: scheduleId },
+    });
+    if (!schedule) {
+      throw new NotFoundException('스케줄을 찾을 수 없습니다.');
+    }
+    schedule.isCompleted = false;
+    await this.scheduleRepository.save(schedule);
+  }
 }

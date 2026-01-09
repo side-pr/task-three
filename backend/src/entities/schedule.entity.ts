@@ -1,6 +1,6 @@
 import { BaseModel } from 'src/entities/base-model.entity';
 import { Task } from 'src/entities/task.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 @Entity()
 export class Schedule extends BaseModel {
@@ -12,6 +12,9 @@ export class Schedule extends BaseModel {
 
   @Column({ type: 'date' })
   targetDate: string;
+
+  @Column({ default: false })
+  isCompleted: boolean;
 
   @OneToOne(() => Task, { nullable: true })
   @JoinColumn({ name: 'task_id' })

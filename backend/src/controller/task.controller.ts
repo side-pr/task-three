@@ -15,28 +15,14 @@ export class TaskController {
   @Post()
   @ApiOperation({ summary: '할 일 생성' })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: '할 일 생성 성공',
     type: ServiceApiResponse<{ taskId: number }>,
   })
-  async createTask(
+  async create(
     @Body() taskCreateRequestDto: TaskCreateRequest,
   ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    const taskId = await this.taskService.createTask(taskCreateRequestDto);
-    return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
-  }
-
-  @Put(':taskId')
-  @ApiOperation({ summary: '할 일 수정' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: '할 일 수정 성공',
-  })
-  async updateTask(
-    @Param('taskId') taskId: number,
-    @Body() taskUpdateRequestDto: TaskUpdateRequest,
-  ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    await this.taskService.updateTask(taskId, taskUpdateRequestDto);
+    const taskId = await this.taskService.create(taskCreateRequestDto);
     return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
   }
 
@@ -45,12 +31,53 @@ export class TaskController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: '할 일 상세 조회 성공',
+    type: ServiceApiResponse<TaskDetailResponse>,
   })
-  async getTaskDetail(
+  async getDetail(
     @Param('taskId') taskId: number,
   ): Promise<ServiceApiResponse<TaskDetailResponse>> {
-    const taskDetailResponse = await this.taskService.getTaskDetail(taskId);
+    const taskDetailResponse = await this.taskService.getDetail(taskId);
     return ServiceApiResponse.success(HttpStatus.OK, taskDetailResponse);
+  }
+
+  @Put(':taskId')
+  @ApiOperation({ summary: '할 일 수정' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '할 일 수정 성공',
+  })
+  async updateContent(
+    @Param('taskId') taskId: number,
+    @Body() taskUpdateRequestDto: TaskUpdateRequest,
+  ): Promise<ServiceApiResponse<{ taskId: number }>> {
+    await this.taskService.updateContent(taskId, taskUpdateRequestDto);
+    return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
+  }
+
+  @Put(':taskId')
+  @ApiOperation({ summary: '할 일 완료' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '할 일 완료 성공',
+  })
+  async complete(
+    @Param('taskId') taskId: number,
+  ): Promise<ServiceApiResponse<{ taskId: number }>> {
+    await this.taskService.complete(taskId);
+    return ServiceApiResponse.success(HttpStatus.OK);
+  }
+
+  @Delete(':taskId')
+  @ApiOperation({ summary: '할 일 완료 취소' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '할 일 완료 취소 성공',
+  })
+  async cancelComplete(
+    @Param('taskId') taskId: number,
+  ): Promise<ServiceApiResponse<{ taskId: number }>> {
+    await this.taskService.cancelComplete(taskId);
+    return ServiceApiResponse.success(HttpStatus.OK);
   }
 
   @Delete(':taskId')
@@ -59,10 +86,10 @@ export class TaskController {
     status: HttpStatus.NO_CONTENT,
     description: '할 일 삭제 성공',
   })
-  async deleteTask(
+  async delete(
     @Param('taskId') taskId: number,
   ): Promise<ServiceApiResponse<void>> {
-    await this.taskService.deleteTask(taskId);
+    await this.taskService.delete(taskId);
     return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
   }
 }

@@ -25,13 +25,13 @@ export class TaskService {
   //   return [];
   // }
 
-  async createTask(taskCreateRequestDto: TaskCreateRequest) {
+  async create(taskCreateRequestDto: TaskCreateRequest) {
     const task = this.taskRepository.create(taskCreateRequestDto);
     const savedTask = await this.taskRepository.save(task);
     return savedTask.id;
   }
 
-  async updateTask(
+  async updateContent(
     taskId: number,
     taskCreateRequestDto: TaskCreateRequest,
   ): Promise<void> {
@@ -45,7 +45,7 @@ export class TaskService {
     await this.taskRepository.save(task);
   }
 
-  async getTaskDetail(taskId: number): Promise<TaskDetailResponse> {
+  async getDetail(taskId: number): Promise<TaskDetailResponse> {
     const task = await this.taskRepository.findOne({
       where: { id: taskId },
     });
@@ -55,7 +55,7 @@ export class TaskService {
     return new TaskDetailResponse(task.id, task.name);
   }
 
-  async deleteTask(taskId: number): Promise<void> {
+  async delete(taskId: number): Promise<void> {
     const task = await this.taskRepository.findOne({
       where: { id: taskId },
     });
@@ -63,5 +63,27 @@ export class TaskService {
       throw new NotFoundException('할 일을 찾을 수 없습니다.');
     }
     await this.taskRepository.delete(taskId);
+  }
+
+  async complete(taskId: number): Promise<void> {
+    const task = await this.taskRepository.findOne({
+      where: { id: taskId },
+    });
+    if (!task) {
+      throw new NotFoundException('할 일을 찾을 수 없습니다.');
+    }
+    task.isCompleted = true;
+    await this.taskRepository.save(task);
+  }
+
+  async cancelComplete(taskId: number): Promise<void> {
+    const task = await this.taskRepository.findOne({
+      where: { id: taskId },
+    });
+    if (!task) {
+      throw new NotFoundException('할 일을 찾을 수 없습니다.');
+    }
+    task.isCompleted = false;
+    await this.taskRepository.save(task);
   }
 }
