@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, Post } from '@nestjs/common';
+import { Controller, Delete, HttpStatus, Post } from '@nestjs/common';
 import { Body, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TaskService } from 'src/service/task.service';
@@ -38,11 +38,11 @@ export class TaskController {
     return ServiceApiResponse.success(HttpStatus.OK, taskDetailResponse);
   }
 
-  @Get(':taskId')
-  @ApiOperation({ summary: '할 일 상세 조회' })
+  @Delete(':taskId')
+  @ApiOperation({ summary: '할 일 삭제' })
   @ApiResponse({
-    status: HttpStatus.OK,
-    description: '할 일 상세 조회 성공',
+    status: HttpStatus.NO_CONTENT,
+    description: '할 일 삭제 성공',
   })
   async deleteTask(
     @Param('taskId') taskId: number,

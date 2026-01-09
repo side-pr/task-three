@@ -35,4 +35,16 @@ export class ScheduleService {
     const savedSchedule = await this.scheduleRepository.save(schedule);
     return savedSchedule.id;
   }
+
+  async moveToTaskList(scheduleId: number): Promise<void> {
+    const schedule = await this.scheduleRepository.findOne({
+      where: { id: scheduleId },
+    });
+
+    if (!schedule) {
+      throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
+    }
+
+    await this.scheduleRepository.remove(schedule);
+  }
 }
