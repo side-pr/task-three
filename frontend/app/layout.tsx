@@ -4,8 +4,8 @@ import "@app/styles/globals.css";
 import "@app/styles/font.css";
 
 export const metadata: Metadata = {
-  title: "Dev Time",
-  description: "Dev Time",
+  title: "Task Three",
+  description: "Task Three",
 };
 
 export default function RootLayout({
@@ -18,7 +18,11 @@ export default function RootLayout({
       <body className={`font-pretendard`}>
         <div id="modal-root"></div>
         <ModalProvider>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ReactQueryProvider>
+            <div className="w-full h-full flex flex-col items-center">
+              {children}
+            </div>
+          </ReactQueryProvider>
         </ModalProvider>
       </body>
     </html>
