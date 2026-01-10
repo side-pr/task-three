@@ -1,0 +1,6 @@
+export { default as Check } from './Check'
+export { default as Pen } from './Pen'
+export { default as Plus } from './Plus'
+export { default as RoundedTriangleLeft } from './RoundedTriangleLeft'
+export { default as RoundedTriangleRight } from './RoundedTriangleRight'
+export { default as Trash } from './Trash'
