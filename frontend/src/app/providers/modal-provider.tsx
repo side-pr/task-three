@@ -1,7 +1,5 @@
 "use client";
 
-import { LoginDuplicateModal } from "@pages/auth/ui/login-duplicate-modal";
-import { LoginFailModal } from "@pages/auth/ui/login-fail-modal";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -14,15 +12,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
   }, []);
   return (
     <>
-      {modalRoot
-        ? createPortal(
-            <>
-              <LoginFailModal />
-              <LoginDuplicateModal />
-            </>,
-            modalRoot
-          )
-        : null}
+      {modalRoot ? createPortal(<></>, modalRoot) : null}
       {children}
     </>
   );
