@@ -10,18 +10,17 @@
   --color-gray-50: #f8fafc;
   --color-gray-100: #f1f5f9;
   --color-gray-200: #e2e8f0;
-  --color-gray-300: #CAD5E2
-  --color-gray-400: #90A1B9;
-  --color-gray-500: #62748E;
-  --color-gray-600: #45556C;
+  --color-gray-300: #cad5e2;
+  --color-gray-400: #90a1b9;
+  --color-gray-500: #62748e;
+  --color-gray-600: #45556c;
   --color-gray-700: #314158;
-  --color-gray-800: #1D293D;
+  --color-gray-800: #1d293d;
   --color-gray-900: #020618;
 
-  --color-red-50: #FEF2F2;
-  --color-red-100: #FFE2E2;
-  --color-red-600: #E7000B;
- 
+  --color-red-50: #fef2f2;
+  --color-red-100: #ffe2e2;
+  --color-red-600: #e7000b;
 }
 
 @theme inline {
@@ -55,12 +54,12 @@
 }
 @layer utilities {
   .scroll-hide {
-    -ms-overflow-style: none;  /* IE, Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
   }
 
   .scroll-hide::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari, Opera */
+    display: none; /* Chrome, Safari, Opera */
   }
 }
 @media (prefers-color-scheme: dark) {

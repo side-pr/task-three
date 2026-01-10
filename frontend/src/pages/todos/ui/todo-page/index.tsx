@@ -1,4 +1,5 @@
 import { cn } from "@shared/lib/style";
+import { ReactNode } from "react";
 
 export const TodoPage = () => {
   return (
@@ -21,22 +22,50 @@ export const TodoPage = () => {
         </section>
 
         <div className="w-full flex flex-col gap-6">
-          <div className="w-full h-[232px] max-h-[232px]">
-            <section>
-              <h2>오늘 할 일</h2>
-              <p>자기 전까지 꼭 끝낼 일</p>
+          <div className="w-full">
+            <section className="opacity-50">
+              <div className="flex justify-between">
+                <div>
+                  <h2 className="text-title2 font-semibold">오늘 할 일</h2>
+                  <p className="text-body2 text-gray-500 font-regular">
+                    자기 전까지 꼭 끝낼 일
+                  </p>
+                </div>
+                <Badge>0/3</Badge>
+              </div>
+
+              <div className="flex items-center justify-center bg-gray-300 h-[232px] max-h-[232px]">
+                <p className="text-body2 text-gray-400 font-regular">
+                  할 일 목록 작성 후 <br />
+                  여기로 옮겨주세요
+                </p>
+              </div>
             </section>
           </div>
 
           <div className="w-full h-[207px] min-h-[207px]">
             <section>
-              <h2>할 일 목록</h2>
-              <p>생각나는 일 모두 적기</p>
+              <h2 className="text-title2 font-semibold text-gray-950">
+                할 일 목록
+              </h2>
+              <p className="text-body2 text-gray-500 font-regular">
+                생각나는 일 모두 적기
+              </p>
             </section>
           </div>
         </div>
       </div>
     </main>
+  );
+};
+
+export const Badge = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className={cn("px-[6px] py-[2px] rounded-lg h-fit bg-gray-200")}>
+      <span className="text-title3 font-semibold text-gray-600 h-fit">
+        {children}
+      </span>
+    </div>
   );
 };
 
