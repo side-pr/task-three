@@ -21,33 +21,3 @@
   src: url("/fonts/Pretendard-Bold.subset.woff2") format("woff2");
   font-weight: 700;
 }
-
-@theme inline {
-  /* font */
-  --font-pretendard: "Pretendard", sans-serif;
-
-  /* text */
-  --text-heading1: 1.5rem;
-  --text-heading1--line-height: 2rem;
-
-  --text-heading2: 1.125rem;
-  --text-heading2--line-height: 1.5rem;
-
-  --text-title1: 1.25rem;
-  --text-title1--line-height: 1.6875rem;
-
-  --text-title2: 1.125rem;
-  --text-title2--line-height: 1.5rem;
-
-  --text-title3: 1rem;
-  --text-title3--line-height: 1.375rem;
-
-  --text-body1: 1rem;
-  --text-body1--line-height: 1.375rem;
-
-  --text-body2: 0.875rem;
-  --text-body2--line-height: 1.1875rem;
-
-  --text-body3: 0.75rem;
-  --text-body3--line-height: 1rem;
-}
