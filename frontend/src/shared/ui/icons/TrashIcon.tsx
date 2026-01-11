@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgTrashIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" {...props}><path d="M19.09 9.004a1 1 0 0 1 .906 1.087l-1 11A1 1 0 0 1 18 22H6a1 1 0 0 1-.996-.91l-1-11a1 1 0 0 1 1.992-.18L6.913 20h10.174l.917-10.09a1 1 0 0 1 1.087-.906" /><path d="M10 10a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1M14 10a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1M12 2a1 1 0 0 1 1 1v2h7a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2h7V3a1 1 0 0 1 1-1" /></svg>;
+export default SvgTrashIcon;
