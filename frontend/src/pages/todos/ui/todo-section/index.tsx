@@ -1,5 +1,5 @@
 "use client";
-import { PlusIcon } from "@shared/ui/icons";
+import { TodoCreateButton } from "@pages/todos/ui/todo-create-button";
 
 export const TodoSection = () => {
   return (
@@ -17,13 +17,11 @@ export const TodoSection = () => {
           backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23D1D5DB' stroke-width='1' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
         }}
       >
-        <button
-          onClick={() => {
-            console.log("click");
+        <TodoCreateButton
+          onConfirm={() => {
+            console.log("모달 확인");
           }}
-        >
-          <PlusIcon className="w-12 h-12 bg-gray-950 text-gray-0 rounded-full p-[14px]" />
-        </button>
+        />
         <span className="text-gray-950 text-body2">눌러서 할 일 추가</span>
       </div>
     </section>
