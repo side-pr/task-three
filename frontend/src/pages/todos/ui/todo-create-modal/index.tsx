@@ -2,20 +2,17 @@
 
 import { cn } from "@shared/lib/style";
 import * as Dialog from "@radix-ui/react-dialog";
-import { PlusIcon } from "@shared/ui/icons";
 
-export const TodoCreateButton = ({ onCreate }: { onCreate: () => void }) => {
+export const TodoCreateModal = ({
+  onCreate,
+  trigger,
+}: {
+  onCreate: () => void;
+  trigger: React.ReactNode;
+}) => {
   return (
     <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <button
-          onClick={() => {
-            console.log("click");
-          }}
-        >
-          <PlusIcon className="w-12 h-12 bg-gray-950 text-gray-0 rounded-full p-[14px]" />
-        </button>
-      </Dialog.Trigger>
+      <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className={cn("fixed inset-0 z-50 bg-gray-950/25")} />
         <Dialog.Content

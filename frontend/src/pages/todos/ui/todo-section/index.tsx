@@ -1,19 +1,27 @@
 "use client";
+import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { todoQueries } from "@pages/todos/api/todo.queries";
-import { TodoCreateButton } from "@pages/todos/ui/todo-create-button";
-import { useQuery } from "@tanstack/react-query";
+import { TodoCreateContainerButton } from "@pages/todos/ui/todo-create-container-button";
+import { TodoCreateIconButton } from "@pages/todos/ui/todo-create-icon-button";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
-  const { data: todoItems } = useQuery(todoQueries.list());
+  const { data: todoItems } = useSuspenseQuery(todoQueries.list());
+  const itemCount = todoItems.tasks?.length ?? 0;
+
   return (
     <section className="flex flex-col gap-3">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-title2 font-semibold text-gray-950">할 일 목록</h2>
-        <p className="text-body2 text-gray-500 font-regular">
-          생각나는 일 모두 적기
-        </p>
-      </div>
-
+      <header className="flex items-start justify-between">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-title2 font-semibold text-gray-950">
+            할 일 목록
+          </h2>
+          <p className="text-body2 text-gray-500 font-regular">
+            생각나는 일 모두 적기
+          </p>
+        </div>
+        {itemCount > 0 ? <TodoCreateIconButton onCreate={onCreate} /> : null}
+      </header>
       <div
         className="w-full rounded-2xl min-h-[207px] bg-gray-50 flex flex-col items-center justify-center gap-2"
         style={{
@@ -21,20 +29,21 @@ export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
         }}
       >
         {todoItems?.tasks?.map((todo) => (
-          <div
-            className="w-full h-12 bg-gray-100 rounded-2xl text-gray-950"
-            key={todo.taskId}
-          >
-            <p>{todo.name}</p>
-          </div>
+          <TodoItemComponent key={todo.taskId} todo={todo} />
         ))}
-        <TodoCreateButton
-          onCreate={() => {
-            onCreate();
-          }}
-        />
-        <span className="text-gray-950 text-body2">눌러서 할 일 추가</span>
+        {itemCount === 0 && <TodoCreateContainerButton onCreate={onCreate} />}
       </div>
     </section>
+  );
+};
+
+export const TodoItemComponent = ({ todo }: { todo: TodoItem }) => {
+  return (
+    <div
+      className="w-full h-12 bg-gray-100 rounded-2xl text-gray-950"
+      key={todo.taskId}
+    >
+      <p>{todo.name}</p>
+    </div>
   );
 };

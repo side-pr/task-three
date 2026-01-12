@@ -10,3 +10,4 @@ export const todoGetList = async () => {
 export type TodoGetListResponse = AxiosResponse<
   ApiResponse<"/api/tasks", "get", HttpStatus.OK>
 >;
+export type TodoItem = TodoGetListResponse["data"]["tasks"][number];
