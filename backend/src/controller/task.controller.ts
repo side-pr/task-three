@@ -6,18 +6,32 @@ import { TaskCreateRequest } from 'src/dto/task-create-request.dto';
 import { ServiceApiResponse } from 'src/config/api-response';
 import { TaskDetailResponse } from 'src/dto/task-detail-response.dto';
 import { TaskUpdateRequest } from 'src/dto/task-update-request.dto';
+import { TaskCreateResponse } from 'src/dto/task-create-response.dto';
+import { TaskListResponse } from 'src/dto/task-list-response.dto';
 
-@Controller('tasks')
-@ApiTags('tasks')
+@Controller('api/tasks')
+@ApiTags('api/tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
+
+  @Get()
+  @ApiOperation({ summary: '할 일 목록 조회' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '할 일 목록 조회 성공',
+    type: TaskListResponse,
+  })
+  async findAll(): Promise<ServiceApiResponse<TaskListResponse>> {
+    const taskListResponse = await this.taskService.findAll();
+    return ServiceApiResponse.success(HttpStatus.OK, taskListResponse);
+  }
 
   @Post()
   @ApiOperation({ summary: '할 일 생성' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: '할 일 생성 성공',
-    type: ServiceApiResponse<{ taskId: number }>,
+    type: TaskCreateResponse,
   })
   async create(
     @Body() taskCreateRequestDto: TaskCreateRequest,

@@ -1,7 +1,10 @@
 "use client";
+import { todoQueries } from "@pages/todos/api/todo.queries";
 import { TodoCreateButton } from "@pages/todos/ui/todo-create-button";
+import { useQuery } from "@tanstack/react-query";
 
-export const TodoSection = () => {
+export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
+  const { data: todoItems } = useQuery(todoQueries.list());
   return (
     <section className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
@@ -17,9 +20,17 @@ export const TodoSection = () => {
           backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23D1D5DB' stroke-width='1' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
         }}
       >
+        {todoItems?.data?.tasks?.map((todo) => (
+          <div
+            className="w-full h-12 bg-gray-100 rounded-2xl text-gray-950"
+            key={todo.taskId}
+          >
+            <p>{todo.name}</p>
+          </div>
+        ))}
         <TodoCreateButton
-          onConfirm={() => {
-            console.log("모달 확인");
+          onCreate={() => {
+            onCreate();
           }}
         />
         <span className="text-gray-950 text-body2">눌러서 할 일 추가</span>

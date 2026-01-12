@@ -4,7 +4,7 @@ import { cn } from "@shared/lib/style";
 import * as Dialog from "@radix-ui/react-dialog";
 import { PlusIcon } from "@shared/ui/icons";
 
-export const TodoCreateButton = ({ onConfirm }: { onConfirm: () => void }) => {
+export const TodoCreateButton = ({ onCreate }: { onCreate: () => void }) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -45,7 +45,7 @@ export const TodoCreateButton = ({ onConfirm }: { onConfirm: () => void }) => {
 
             <Dialog.Close asChild>
               <button
-                onClick={onConfirm}
+                onClick={onCreate}
                 className="flex-1 h-12 bg-gray-950 text-gray-0 rounded-full"
               >
                 추가

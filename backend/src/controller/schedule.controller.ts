@@ -14,8 +14,8 @@ import { ScheduleCreateRequest } from 'src/dto/schedule-create-request.dto';
 import { ScheduleDetailResponse } from 'src/dto/schedule-detail-response.dto';
 import { ScheduleService } from 'src/service/schedule.service';
 
-@ApiTags('schedules')
-@Controller('schedules')
+@ApiTags('api/schedules')
+@Controller('api/schedules')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 

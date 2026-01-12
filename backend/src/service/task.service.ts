@@ -2,6 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskCreateRequest } from 'src/dto/task-create-request.dto';
 import { TaskDetailResponse } from 'src/dto/task-detail-response.dto';
+import {
+  TaskItemResponse,
+  TaskListResponse,
+} from 'src/dto/task-list-response.dto';
 import { Task } from 'src/entities/task.entity';
 import { Repository } from 'typeorm';
 
@@ -12,18 +16,19 @@ export class TaskService {
     private readonly taskRepository: Repository<Task>,
   ) {}
 
-  // async findAll(date: Date): Promise<Task[]> {
-  //   const tasks = await this.taskRepository.find({
-  //     where: {
-  //       targetDate: date,
-  //     },
-  //   });
-  //   //해당 날짜의 스케줄이 있는 태스크를 조회
-  //   //오늘이면 isCompleted가 false인 태스크를 조회 + 오늘 완료한 태스크 조회
-  //   //오늘이 아니면 해당 날짜에 완료한 태스크를 조회
-  //   console.log(tasks);
-  //   return [];
-  // }
+  async findAll(): Promise<TaskListResponse> {
+    const tasks = await this.taskRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    const taskItems = tasks.map(
+      (task) => new TaskItemResponse(task.id, task.name, task.isCompleted),
+    );
+
+    return new TaskListResponse(taskItems);
+  }
 
   async create(taskCreateRequestDto: TaskCreateRequest) {
     const task = this.taskRepository.create(taskCreateRequestDto);

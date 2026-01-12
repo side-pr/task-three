@@ -20,7 +20,8 @@
       "Bash(docker-compose up:*)",
       "Bash(docker compose:*)",
       "Bash(npm install:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(npm run start:dev:*)"
     ]
   }
 }
