@@ -20,7 +20,7 @@ export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
           backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23D1D5DB' stroke-width='1' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
         }}
       >
-        {todoItems?.data?.tasks?.map((todo) => (
+        {todoItems?.tasks?.map((todo) => (
           <div
             className="w-full h-12 bg-gray-100 rounded-2xl text-gray-950"
             key={todo.taskId}
