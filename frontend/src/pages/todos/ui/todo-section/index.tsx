@@ -3,6 +3,7 @@ import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { todoQueries } from "@pages/todos/api/todo.queries";
 import { TodoCreateContainerButton } from "@pages/todos/ui/todo-create-container-button";
 import { TodoCreateIconButton } from "@pages/todos/ui/todo-create-icon-button";
+import { PenIcon, TrashIcon } from "@shared/ui/icons";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
@@ -40,10 +41,18 @@ export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
 export const TodoItemComponent = ({ todo }: { todo: TodoItem }) => {
   return (
     <div
-      className="w-full h-12 bg-gray-100 rounded-2xl text-gray-950"
+      className="w-full h-11 rounded-2xl text-gray-950 pl-3 py-3 bg-gray-200 flex items-center justify-between"
       key={todo.taskId}
     >
-      <p>{todo.name}</p>
+      <span className="text-body1 text-gray-950 font-regular">{todo.name}</span>
+      <div className="flex items-center">
+        <button className="w-11 h-11 flex items-center justify-center">
+          <PenIcon className="w-4 h-4 text-gray-950" />
+        </button>
+        <button className="w-11 h-11 flex items-center justify-center">
+          <TrashIcon className="w-4 h-4 text-gray-950" />
+        </button>
+      </div>
     </div>
   );
 };
