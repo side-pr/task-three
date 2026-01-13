@@ -29,11 +29,7 @@ export const TodoPage = () => {
         <div className="w-full flex flex-col gap-6">
           <MustTodoSection />
           <TodoSection
-            onCreate={() =>
-              createTodo({
-                name: "test",
-              })
-            }
+            onCreate={(formData: { name: string }) => createTodo(formData)}
             onDelete={(todoId) => deleteTodo({ taskId: todoId })}
           />
         </div>

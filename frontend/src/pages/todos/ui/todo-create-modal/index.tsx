@@ -1,6 +1,11 @@
-import { cn } from "@shared/lib/style";
-import * as Dialog from "@radix-ui/react-dialog";
-
+import { Dialog } from "@shared/ui";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+export const TodoCreateFormValues = z.object({
+  name: z.string().min(1).max(20),
+});
+export type TodoCreateFormValues = z.infer<typeof TodoCreateFormValues>;
 export const TodoCreateModal = ({
   onCreate,
   trigger,
@@ -8,28 +13,26 @@ export const TodoCreateModal = ({
   onCreate: () => void;
   trigger: React.ReactNode;
 }) => {
+  const { register, handleSubmit } = useForm<TodoCreateFormValues>({
+    defaultValues: {
+      name: "",
+    },
+    resolver: zodResolver(TodoCreateFormValues),
+  });
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className={cn("fixed inset-0 z-50 bg-gray-950/25")} />
-        <Dialog.Content
-          onInteractOutside={(e) => e.preventDefault()}
-          className={cn(
-            "fixed left-1/2 top-1/2 z-50 w-[327px] p-6",
-            "-translate-x-1/2 -translate-y-1/2",
-            "bg-gray-0 rounded-[24px]",
-            "focus:outline-none flex flex-col gap-4"
-          )}
-        >
-          <Dialog.Title className="text-title1 text-gray-950 font-bold">
-            할 일 추가
-          </Dialog.Title>
-          <Dialog.Description className="text-body2 text-gray-500 font-regular">
+      <Dialog.Content>
+        <form onSubmit={handleSubmit(onCreate)}>
+          <Dialog.Title>할 일 추가</Dialog.Title>
+          <Dialog.Description>
             Tip. <br />
             사소한 일이라도 적으면 정리에 도움이 돼요
           </Dialog.Description>
-          <p>aaaa</p>
+          <div>
+            <label htmlFor="todo-name">할 일 이름</label>
+            <input id="todo-name" type="text" {...register("name")} />
+          </div>
 
           <div className="flex gap-3 mt-4">
             <Dialog.Close asChild>
@@ -40,15 +43,15 @@ export const TodoCreateModal = ({
 
             <Dialog.Close asChild>
               <button
-                onClick={onCreate}
+                type="submit"
                 className="flex-1 h-12 bg-gray-950 text-gray-0 rounded-full"
               >
                 추가
               </button>
             </Dialog.Close>
           </div>
-        </Dialog.Content>
-      </Dialog.Portal>
+        </form>
+      </Dialog.Content>
     </Dialog.Root>
   );
 };
