@@ -1,4 +1,5 @@
 import { todoCreate } from "@pages/todos/api/todo-create";
+import { todoDelete } from "@pages/todos/api/todo-delete";
 import { todoQueries } from "@pages/todos/api/todo.queries";
 import { DateSelectSection } from "@pages/todos/ui/date-select-section";
 import { MustTodoSection } from "@pages/todos/ui/must-todo-section";
@@ -9,6 +10,13 @@ export const TodoPage = () => {
   const queryClient = useQueryClient();
   const { mutateAsync: createTodo } = useMutation({
     mutationFn: todoCreate,
+    onSuccess: () => {
+      queryClient.invalidateQueries(todoQueries.list());
+    },
+  });
+
+  const { mutateAsync: deleteTodo } = useMutation({
+    mutationFn: todoDelete,
     onSuccess: () => {
       queryClient.invalidateQueries(todoQueries.list());
     },
@@ -26,6 +34,7 @@ export const TodoPage = () => {
                 name: "test",
               })
             }
+            onDelete={(todoId) => deleteTodo({ taskId: todoId })}
           />
         </div>
       </div>

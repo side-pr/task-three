@@ -2,11 +2,18 @@ import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { todoQueries } from "@pages/todos/api/todo.queries";
 import { TodoCreateContainerButton } from "@pages/todos/ui/todo-create-container-button";
 import { TodoCreateIconButton } from "@pages/todos/ui/todo-create-icon-button";
+import { TodoDeleteModal } from "@pages/todos/ui/todo-delete-modal";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
+export const TodoSection = ({
+  onCreate,
+  onDelete,
+}: {
+  onCreate: () => void;
+  onDelete: (todoId: number) => void;
+}) => {
   const { data: todoItems } = useSuspenseQuery(todoQueries.list());
   const itemCount = todoItems.tasks?.length ?? 0;
 
@@ -27,7 +34,11 @@ export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
       <ul className="flex flex-col gap-2">
         {todoItems?.tasks?.map((todo) => (
           <li key={todo.taskId}>
-            <TodoItemComponent todo={todo} isDone={true} />
+            <TodoItemComponent
+              todo={todo}
+              isDone={true}
+              onDelete={() => onDelete(todo.taskId)}
+            />
           </li>
         ))}
       </ul>
@@ -48,9 +59,11 @@ export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
 export const TodoItemComponent = ({
   todo,
   isDone = false,
+  onDelete,
 }: {
   todo: TodoItem;
   isDone?: boolean;
+  onDelete: () => void;
 }) => {
   return (
     <div
@@ -83,10 +96,31 @@ export const TodoItemComponent = ({
         <button className="w-11 h-11 flex items-center justify-center">
           <PenIcon className="w-4 h-4 text-gray-950" />
         </button>
+        <TodoItemDeleteIconButton
+          onDelete={() => onDelete()}
+          todoName={todo.name}
+        />
+      </div>
+    </div>
+  );
+};
+
+const TodoItemDeleteIconButton = ({
+  onDelete,
+  todoName,
+}: {
+  onDelete: () => void;
+  todoName: string;
+}) => {
+  return (
+    <TodoDeleteModal
+      trigger={
         <button className="w-11 h-11 flex items-center justify-center">
           <TrashIcon className="w-4 h-4 text-gray-950" />
         </button>
-      </div>
-    </div>
+      }
+      onDelete={onDelete}
+      todoName={todoName}
+    />
   );
 };
