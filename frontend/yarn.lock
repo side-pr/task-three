@@ -417,6 +417,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@colors/colors@npm:1.5.0":
+  version: 1.5.0
+  resolution: "@colors/colors@npm:1.5.0"
+  checksum: d64d5260bed1d5012ae3fc617d38d1afc0329fec05342f4e6b838f46998855ba56e0a73833f4a80fa8378c84810da254f76a8a19c39d038260dc06dc4e007425
+  languageName: node
+  linkType: hard
+
+"@commander-js/extra-typings@npm:^13.0.0":
+  version: 13.1.0
+  resolution: "@commander-js/extra-typings@npm:13.1.0"
+  peerDependencies:
+    commander: ~13.1.0
+  checksum: c4c9b0bd3bd62a0d4b713d2e5a543986134ef87d29edfd15298a8c51de74df25265814789d49371ce28d84282b0abfed53452fe6dfdb939219343bb64a0dfb2c
+  languageName: node
+  linkType: hard
+
 "@emnapi/core@npm:^1.4.3, @emnapi/core@npm:^1.7.1":
   version: 1.8.1
   resolution: "@emnapi/core@npm:1.8.1"
@@ -2948,6 +2964,54 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@suspensive/react-query-4@npm:^3.18.0":
+  version: 3.18.0
+  resolution: "@suspensive/react-query-4@npm:3.18.0"
+  peerDependencies:
+    "@tanstack/react-query": "*"
+    react: ^18 || ^19
+  checksum: b94c4c7bbc967b28beb06bec81d13474b4d91ce511790cb22a2b9861868e84a38665a0c0e9f4bf4c83e06d7bac148d03578024893d0b49038f1b4a1501d44f9f
+  languageName: node
+  linkType: hard
+
+"@suspensive/react-query-5@npm:^3.18.0":
+  version: 3.18.0
+  resolution: "@suspensive/react-query-5@npm:3.18.0"
+  peerDependencies:
+    "@tanstack/react-query": "*"
+    react: ^18 || ^19
+  checksum: 1b7d8ad85d64a650bf80846993b9c1f2dd84359f30d4f048fc75ced89f75eb1d420b4c8d2f36eb6e02d7bd7654c60484a586348239abf7455bc3a2bca2bd315c
+  languageName: node
+  linkType: hard
+
+"@suspensive/react-query@npm:^3.18.0":
+  version: 3.18.0
+  resolution: "@suspensive/react-query@npm:3.18.0"
+  dependencies:
+    "@commander-js/extra-typings": ^13.0.0
+    "@suspensive/react-query-4": ^3.18.0
+    "@suspensive/react-query-5": ^3.18.0
+    cli-table3: ^0.6.5
+    commander: ^13.0.0
+  peerDependencies:
+    "@tanstack/react-query": ^4.42.0 || ^5.82.0
+    react: ^18 || ^19
+  bin:
+    srq: dist/bin/cli.cjs
+    suspensive-react-query: dist/bin/cli.cjs
+  checksum: 0cf71aaad9e669d27b0195bc7bdc2ed31a6bcd00f3e4ad828c9dd08425dc88da1f79ca6a9237d65d52d8741825f2321da7f88b21eb2d538db694cc88ee6582f3
+  languageName: node
+  linkType: hard
+
+"@suspensive/react@npm:^3.18.0":
+  version: 3.18.0
+  resolution: "@suspensive/react@npm:3.18.0"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: fd62e343fd61561d8604da3a6a691f3d2c5db4753c333192f9cac80df2ed45444ea167074ec19f5b6f385240ed3f02df3d7ed0f1caba18ed464440514d13b584
+  languageName: node
+  linkType: hard
+
 "@svgr/babel-plugin-add-jsx-attribute@npm:8.0.0":
   version: 8.0.0
   resolution: "@svgr/babel-plugin-add-jsx-attribute@npm:8.0.0"
@@ -3321,7 +3385,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.90.11":
+"@tanstack/react-query@npm:^5.90.16":
   version: 5.90.16
   resolution: "@tanstack/react-query@npm:5.90.16"
   dependencies:
@@ -4246,6 +4310,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cli-table3@npm:^0.6.5":
+  version: 0.6.5
+  resolution: "cli-table3@npm:0.6.5"
+  dependencies:
+    "@colors/colors": 1.5.0
+    string-width: ^4.2.0
+  dependenciesMeta:
+    "@colors/colors":
+      optional: true
+  checksum: ab7afbf4f8597f1c631f3ee6bb3481d0bfeac8a3b81cffb5a578f145df5c88003b6cfff46046a7acae86596fdd03db382bfa67f20973b6b57425505abc47e42c
+  languageName: node
+  linkType: hard
+
 "cliui@npm:^8.0.1":
   version: 8.0.1
   resolution: "cliui@npm:8.0.1"
@@ -4307,6 +4384,13 @@ __metadata:
   dependencies:
     delayed-stream: ~1.0.0
   checksum: 49fa4aeb4916567e33ea81d088f6584749fc90c7abec76fd516bf1c5aa5c79f3584b5ba3de6b86d26ddd64bae5329c4c7479343250cfe71c75bb366eae53bb7c
+  languageName: node
+  linkType: hard
+
+"commander@npm:^13.0.0":
+  version: 13.1.0
+  resolution: "commander@npm:13.1.0"
+  checksum: 8ca2fcb33caf2aa06fba3722d7a9440921331d54019dabf906f3603313e7bf334b009b862257b44083ff65d5a3ab19e83ad73af282bd5319f01dc228bdf87ef0
   languageName: node
   linkType: hard
 
@@ -6853,6 +6937,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"overlay-kit@npm:^1.8.6":
+  version: 1.8.6
+  resolution: "overlay-kit@npm:1.8.6"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18 || ^19
+    react-dom: ^16.8 || ^17 || ^18 || ^19
+  checksum: 300026d99d63954ab5073f65dff86a789ba4d785a67767c01218f5bf01ffc3b6b161ad8931c4fc68c9821a9f7f267acd5c2ded1a31c6ff1e2e14e16770740810
+  languageName: node
+  linkType: hard
+
 "p-limit@npm:^2.2.0":
   version: 2.3.0
   resolution: "p-limit@npm:2.3.0"
@@ -7864,10 +7958,12 @@ __metadata:
   dependencies:
     "@hookform/devtools": ^4.4.0
     "@hookform/resolvers": ^5.2.2
+    "@suspensive/react": ^3.18.0
+    "@suspensive/react-query": ^3.18.0
     "@svgr/cli": ^8.1.0
     "@tailwindcss/postcss": ^4
     "@tanstack/eslint-plugin-query": ^5.91.2
-    "@tanstack/react-query": ^5.90.11
+    "@tanstack/react-query": ^5.90.16
     "@tanstack/react-query-devtools": ^5.91.1
     "@testing-library/dom": ^10.4.1
     "@testing-library/react": ^16.3.0
@@ -7882,6 +7978,7 @@ __metadata:
     eslint: ^9
     jest: ^30.2.0
     openapi-typescript: ^7.10.1
+    overlay-kit: ^1.8.6
     postcss: ^8.4.49
     radix-ui: latest
     react: 19.2.0
