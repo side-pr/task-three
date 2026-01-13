@@ -68,7 +68,7 @@ export class TaskController {
     return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
   }
 
-  @Put(':taskId')
+  @Put(':taskId/complete')
   @ApiOperation({ summary: '할 일 완료' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -81,7 +81,7 @@ export class TaskController {
     return ServiceApiResponse.success(HttpStatus.OK);
   }
 
-  @Delete(':taskId')
+  @Put(':taskId/cancel-complete')
   @ApiOperation({ summary: '할 일 완료 취소' })
   @ApiResponse({
     status: HttpStatus.OK,

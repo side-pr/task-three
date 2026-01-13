@@ -62,7 +62,7 @@ export class ScheduleController {
     return ServiceApiResponse.success(HttpStatus.CREATED, { scheduleId });
   }
 
-  @Put(':scheduleId')
+  @Put(':scheduleId/complete')
   @ApiOperation({ summary: '스케줄 완료' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -75,7 +75,7 @@ export class ScheduleController {
     return ServiceApiResponse.success(HttpStatus.OK);
   }
 
-  @Delete(':scheduleId')
+  @Put(':scheduleId/cancel-complete')
   @ApiOperation({ summary: '스케줄을 할일 목록으로 이동' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
