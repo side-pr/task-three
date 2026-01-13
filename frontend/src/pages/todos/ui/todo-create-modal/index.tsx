@@ -2,6 +2,7 @@ import { Dialog } from "@shared/ui";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@shared/ui/input";
 export const TodoCreateFormValues = z.object({
   name: z.string().min(1).max(20),
 });
@@ -29,10 +30,15 @@ export const TodoCreateModal = ({
             Tip. <br />
             사소한 일이라도 적으면 정리에 도움이 돼요
           </Dialog.Description>
-          <div>
+          <fieldset className="flex flex-col h-[97px]">
             <label htmlFor="todo-name">할 일 이름</label>
-            <input id="todo-name" type="text" {...register("name")} />
-          </div>
+            <Input
+              id="todo-name"
+              type="text"
+              {...register("name")}
+              placeholder="할 일 이름을 입력해주세요"
+            />
+          </fieldset>
 
           <div className="flex gap-3 mt-4">
             <Dialog.Close asChild>
