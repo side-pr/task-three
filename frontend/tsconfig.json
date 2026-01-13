@@ -12,11 +12,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "types": ["vite/client"],
     "paths": {
       "@app/*": ["./src/app/*"],
       "@entities/*": ["./src/entities/*"],
@@ -29,11 +25,9 @@
     "target": "ES2017"
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/vite-env.d.ts"
   ],
   "exclude": ["node_modules"]
 }

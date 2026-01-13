@@ -1,4 +1,3 @@
-"use client";
 import { todoCreate } from "@pages/todos/api/todo-create";
 import { todoQueries } from "@pages/todos/api/todo.queries";
 import { DateSelectSection } from "@pages/todos/ui/date-select-section";

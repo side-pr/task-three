@@ -1,5 +1,3 @@
-"use client";
-
 import { PlusIcon } from "@shared/ui/icons";
 import { TodoCreateModal } from "@pages/todos/ui/todo-create-modal";
 

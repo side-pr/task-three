@@ -1,11 +1,10 @@
-"use client";
 import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { todoQueries } from "@pages/todos/api/todo.queries";
 import { TodoCreateContainerButton } from "@pages/todos/ui/todo-create-container-button";
 import { TodoCreateIconButton } from "@pages/todos/ui/todo-create-icon-button";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const TodoSection = ({ onCreate }: { onCreate: () => void }) => {
   const { data: todoItems } = useSuspenseQuery(todoQueries.list());

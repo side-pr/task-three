@@ -1,4 +1,4 @@
-import { API_SERVER_URL } from "@shared/api";
+import { API_SERVER_URL } from "./config";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 const TIMEOUT = 10000;
