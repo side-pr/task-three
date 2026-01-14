@@ -1,6 +1,6 @@
 import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { todoQueries } from "@pages/todos/api/todo.queries";
-import { TodoCreateModal } from "@pages/todos/ui/todo-upsert-modal";
+import { TodoCreateModal } from "@pages/todos/ui/todo-create-modal";
 import { TodoDeleteModal } from "@pages/todos/ui/todo-delete-modal";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, PlusIcon, TrashIcon } from "@shared/ui/icons";
