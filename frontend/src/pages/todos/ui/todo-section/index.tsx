@@ -2,15 +2,18 @@ import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { todoQueries } from "@pages/todos/api/todo.queries";
 import { TodoCreateModal } from "@pages/todos/ui/todo-create-modal";
 import { TodoDeleteModal } from "@pages/todos/ui/todo-delete-modal";
+import { TodoUpdateModal } from "@pages/todos/ui/todo-update-modal";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, PlusIcon, TrashIcon } from "@shared/ui/icons";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { overlay } from "overlay-kit";
 export const TodoSection = ({
   onCreate,
+  onUpdate,
   onDelete,
 }: {
-  onCreate: () => void;
+  onCreate: (formData: { name: string }) => void;
+  onUpdate: (todoId: number, formData: { name: string }) => void;
   onDelete: (todoId: number) => void;
 }) => {
   const { data: todoItems } = useSuspenseQuery(todoQueries.list());
@@ -47,13 +50,15 @@ export const TodoSection = ({
 
       <ul className="flex flex-col gap-2">
         {todoItems?.tasks?.map((todo) => (
-          <li key={todo.taskId}>
-            <TodoListItem
-              todo={todo}
-              isDone={true}
-              onDelete={() => onDelete(todo.taskId)}
-            />
-          </li>
+          <TodoListItem
+            key={todo.taskId}
+            todo={todo}
+            isDone={true}
+            onDelete={() => onDelete(todo.taskId)}
+            onUpdate={(formData: { name: string }) =>
+              onUpdate(todo.taskId, formData)
+            }
+          />
         ))}
       </ul>
       {itemCount === 0 && (
@@ -87,13 +92,15 @@ export const TodoListItem = ({
   todo,
   isDone = false,
   onDelete,
+  onUpdate,
 }: {
   todo: TodoItem;
   isDone?: boolean;
   onDelete: () => void;
+  onUpdate: (todoId: number, formData: { name: string }) => void;
 }) => {
   return (
-    <div
+    <li
       className={cn(
         "w-full h-11 rounded-2xl text-gray-950 py-3 bg-gray-200 flex items-center justify-between",
         isDone && "bg-gray-100 opacity-50"
@@ -120,7 +127,20 @@ export const TodoListItem = ({
         </span>
       </div>
       <div className="flex items-center">
-        <button className="w-11 h-11 flex items-center justify-center">
+        <button
+          className="w-11 h-11 flex items-center justify-center"
+          onClick={() => {
+            overlay.open(({ isOpen, close }) => (
+              <TodoUpdateModal
+                isOpen={isOpen}
+                close={close}
+                onSubmit={(formData: { name: string }) =>
+                  onUpdate(todo.taskId, formData)
+                }
+              />
+            ));
+          }}
+        >
           <PenIcon className="w-4 h-4 text-gray-950" />
         </button>
         <button
@@ -139,6 +159,6 @@ export const TodoListItem = ({
           <TrashIcon className="w-4 h-4 text-gray-950" />
         </button>
       </div>
-    </div>
+    </li>
   );
 };

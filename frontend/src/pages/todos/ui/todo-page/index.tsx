@@ -1,26 +1,14 @@
+import { getQueryClient } from "@app/providers/get-query-client";
 import { todoCreate } from "@pages/todos/api/todo-create";
 import { todoDelete } from "@pages/todos/api/todo-delete";
 import { todoQueries } from "@pages/todos/api/todo.queries";
 import { DateSelectSection } from "@pages/todos/ui/date-select-section";
 import { MustTodoSection } from "@pages/todos/ui/must-todo-section";
 import { TodoSection } from "@pages/todos/ui/todo-section";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-
+import { mutationOptions } from "@tanstack/react-query";
+import { Mutation } from "@suspensive/react-query";
+import { todoUpdate } from "@pages/todos/api/todo-update";
 export const TodoPage = () => {
-  const queryClient = useQueryClient();
-  const { mutateAsync: createTodo } = useMutation({
-    mutationFn: todoCreate,
-    onSuccess: () => {
-      queryClient.invalidateQueries(todoQueries.list());
-    },
-  });
-
-  const { mutateAsync: deleteTodo } = useMutation({
-    mutationFn: todoDelete,
-    onSuccess: () => {
-      queryClient.invalidateQueries(todoQueries.list());
-    },
-  });
   return (
     <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
       <div className="w-full h-full flex flex-col items-center gap-6  px-6">
@@ -28,12 +16,60 @@ export const TodoPage = () => {
 
         <div className="w-full flex flex-col gap-6">
           <MustTodoSection />
-          <TodoSection
-            onCreate={(formData: { name: string }) => createTodo(formData)}
-            onDelete={(todoId) => deleteTodo({ taskId: todoId })}
-          />
+          <Mutation {...todoCreateMutationOptions()}>
+            {({ mutateAsync: createTodo }) => (
+              <Mutation {...todoDeleteMutationOptions()}>
+                {({ mutateAsync: deleteTodo }) => (
+                  <Mutation {...todoUpdateMutationOptions()}>
+                    {({ mutateAsync: updateTodo }) => (
+                      <TodoSection
+                        onCreate={(formData: { name: string }) =>
+                          createTodo(formData)
+                        }
+                        onUpdate={(
+                          todoId: number,
+                          formData: { name: string }
+                        ) =>
+                          updateTodo({
+                            pathParams: { taskId: todoId },
+                            formData,
+                          })
+                        }
+                        onDelete={(todoId) => deleteTodo({ taskId: todoId })}
+                      />
+                    )}
+                  </Mutation>
+                )}
+              </Mutation>
+            )}
+          </Mutation>
         </div>
       </div>
     </main>
   );
+};
+const todoUpdateMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: todoUpdate,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(todoQueries.list());
+    },
+  });
+};
+const todoCreateMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: todoCreate,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(todoQueries.list());
+    },
+  });
+};
+
+const todoDeleteMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: todoDelete,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(todoQueries.list());
+    },
+  });
 };

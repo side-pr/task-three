@@ -31,11 +31,45 @@ export interface paths {
         };
         /** 할 일 상세 조회 */
         get: operations["TaskController_getDetail"];
-        /** 할 일 완료 */
-        put: operations["TaskController_complete"];
+        /** 할 일 수정 */
+        put: operations["TaskController_updateContent"];
         post?: never;
         /** 할 일 삭제 */
         delete: operations["TaskController_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{taskId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** 할 일 완료 */
+        put: operations["TaskController_complete"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{taskId}/cancel-complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** 할 일 완료 취소 */
+        put: operations["TaskController_cancelComplete"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -83,11 +117,45 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** 스케줄 완료 */
-        put: operations["ScheduleController_completeSchedule"];
+        /** 스케줄 내용 수정 */
+        put: operations["ScheduleController_updateSchedule"];
         post?: never;
         /** 스케줄 완료 취소 */
         delete: operations["ScheduleController_cancelComplete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/schedules/{scheduleId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** 스케줄 완료 */
+        put: operations["ScheduleController_completeSchedule"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/schedules/{scheduleId}/cancel-complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** 스케줄을 할일 목록으로 이동 */
+        put: operations["ScheduleController_moveToTaskList"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -258,7 +326,7 @@ export interface operations {
             };
         };
     };
-    TaskController_complete: {
+    TaskController_updateContent: {
         parameters: {
             query?: never;
             header?: never;
@@ -267,9 +335,13 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskUpdateRequest"];
+            };
+        };
         responses: {
-            /** @description 할 일 완료 성공 */
+            /** @description 할 일 수정 성공 */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -291,6 +363,46 @@ export interface operations {
         responses: {
             /** @description 할 일 삭제 성공 */
             204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskController_complete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 할 일 완료 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaskController_cancelComplete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 할 일 완료 취소 성공 */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -344,6 +456,50 @@ export interface operations {
             };
         };
     };
+    ScheduleController_updateSchedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScheduleCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 스케줄 수정 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceApiResponse"];
+                };
+            };
+        };
+    };
+    ScheduleController_cancelComplete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                scheduleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 스케줄 완료 취소 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     ScheduleController_completeSchedule: {
         parameters: {
             query?: never;
@@ -364,7 +520,7 @@ export interface operations {
             };
         };
     };
-    ScheduleController_cancelComplete: {
+    ScheduleController_moveToTaskList: {
         parameters: {
             query?: never;
             header?: never;
@@ -375,8 +531,8 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 스케줄 완료 취소 성공 */
-            200: {
+            /** @description 스케줄을 할일 목록으로 이동 성공 */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };

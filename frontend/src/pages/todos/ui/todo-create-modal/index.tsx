@@ -14,7 +14,7 @@ export const TodoCreateModal = ({
 }: {
   isOpen: boolean;
   close: () => void;
-  onCreate: () => void;
+  onCreate: (formData: { name: string }) => void;
 }) => {
   const { register, handleSubmit } = useForm<TodoCreateFormValues>({
     defaultValues: {
