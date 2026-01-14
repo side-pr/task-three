@@ -20,7 +20,7 @@ export const TodoDeleteModal = ({
         <div className="flex gap-3 mt-4">
           <button
             onClick={close}
-            className="flex-1 h-12 bg-gray-200 text-gray-950 rounded-full"
+            className="flex-1 h-12 bg-gray-200 text-gray-950 rounded-2xl"
           >
             취소
           </button>
@@ -30,7 +30,7 @@ export const TodoDeleteModal = ({
               onDelete();
               close();
             }}
-            className="flex-1 h-12 bg-gray-950 text-gray-0 rounded-full"
+            className="flex-1 h-12 bg-red-50 text-red-600 rounded-2xl"
           >
             삭제
           </button>
