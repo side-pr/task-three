@@ -6,7 +6,7 @@ import { TodoDeleteModal } from "@pages/todos/ui/todo-delete-modal";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
 import { useSuspenseQuery } from "@tanstack/react-query";
-
+import { overlay } from "overlay-kit";
 export const TodoSection = ({
   onCreate,
   onDelete,
@@ -34,7 +34,7 @@ export const TodoSection = ({
       <ul className="flex flex-col gap-2">
         {todoItems?.tasks?.map((todo) => (
           <li key={todo.taskId}>
-            <TodoItemComponent
+            <TodoListItem
               todo={todo}
               isDone={true}
               onDelete={() => onDelete(todo.taskId)}
@@ -56,7 +56,7 @@ export const TodoSection = ({
   );
 };
 
-export const TodoItemComponent = ({
+export const TodoListItem = ({
   todo,
   isDone = false,
   onDelete,
@@ -96,31 +96,22 @@ export const TodoItemComponent = ({
         <button className="w-11 h-11 flex items-center justify-center">
           <PenIcon className="w-4 h-4 text-gray-950" />
         </button>
-        <TodoItemDeleteIconButton
-          onDelete={() => onDelete()}
-          todoName={todo.name}
-        />
-      </div>
-    </div>
-  );
-};
-
-const TodoItemDeleteIconButton = ({
-  onDelete,
-  todoName,
-}: {
-  onDelete: () => void;
-  todoName: string;
-}) => {
-  return (
-    <TodoDeleteModal
-      trigger={
-        <button className="w-11 h-11 flex items-center justify-center">
+        <button
+          className="w-11 h-11 flex items-center justify-center"
+          onClick={() => {
+            overlay.open(({ isOpen, close }) => (
+              <TodoDeleteModal
+                isOpen={isOpen}
+                close={close}
+                onDelete={onDelete}
+                todoName={todo.name}
+              />
+            ));
+          }}
+        >
           <TrashIcon className="w-4 h-4 text-gray-950" />
         </button>
-      }
-      onDelete={onDelete}
-      todoName={todoName}
-    />
+      </div>
+    </div>
   );
 };
