@@ -5,10 +5,13 @@ import { todoQueries } from "@pages/todos/api/todo.queries";
 import { DateSelectSection } from "@pages/todos/ui/date-select-section";
 import { MustTodoSection } from "@pages/todos/ui/must-todo-section";
 import { TodoSection } from "@pages/todos/ui/todo-section";
-import { mutationOptions } from "@tanstack/react-query";
-import { Mutation } from "@suspensive/react-query";
+import { mutationOptions, useMutation } from "@tanstack/react-query";
 import { todoUpdate } from "@pages/todos/api/todo-update";
 export const TodoPage = () => {
+  const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions());
+  const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions());
+  const { mutateAsync: deleteTodo } = useMutation(todoDeleteMutationOptions());
+
   return (
     <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
       <div className="w-full h-full flex flex-col items-center gap-6  px-6">
@@ -16,33 +19,16 @@ export const TodoPage = () => {
 
         <div className="w-full flex flex-col gap-6">
           <MustTodoSection />
-          <Mutation {...todoCreateMutationOptions()}>
-            {({ mutateAsync: createTodo }) => (
-              <Mutation {...todoDeleteMutationOptions()}>
-                {({ mutateAsync: deleteTodo }) => (
-                  <Mutation {...todoUpdateMutationOptions()}>
-                    {({ mutateAsync: updateTodo }) => (
-                      <TodoSection
-                        onCreate={(formData: { name: string }) =>
-                          createTodo(formData)
-                        }
-                        onUpdate={(
-                          todoId: number,
-                          formData: { name: string }
-                        ) =>
-                          updateTodo({
-                            pathParams: { taskId: todoId },
-                            formData,
-                          })
-                        }
-                        onDelete={(todoId) => deleteTodo({ taskId: todoId })}
-                      />
-                    )}
-                  </Mutation>
-                )}
-              </Mutation>
-            )}
-          </Mutation>
+          <TodoSection
+            onCreate={(formData: { name: string }) => createTodo(formData)}
+            onUpdate={(todoId: number, formData: { name: string }) =>
+              updateTodo({
+                pathParams: { taskId: todoId },
+                formData,
+              })
+            }
+            onDelete={(todoId) => deleteTodo({ taskId: todoId })}
+          />
         </div>
       </div>
     </main>
