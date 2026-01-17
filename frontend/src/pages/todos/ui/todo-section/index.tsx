@@ -1,22 +1,22 @@
 import { TodoItem } from "@pages/todos/api/todo-get-list";
-import { todoQueries } from "@pages/todos/api/todo.queries";
 import { TodoCreateModal } from "@pages/todos/ui/todo-create-modal";
 import { TodoDeleteModal } from "@pages/todos/ui/todo-delete-modal";
 import { TodoUpdateModal } from "@pages/todos/ui/todo-update-modal";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, PlusIcon, TrashIcon } from "@shared/ui/icons";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { overlay } from "overlay-kit";
+
 export const TodoSection = ({
+  todoItems,
   onCreate,
   onUpdate,
   onDelete,
 }: {
+  todoItems: { tasks: TodoItem[] };
   onCreate: (formData: { name: string }) => void;
   onUpdate: (todoId: number, formData: { name: string }) => void;
   onDelete: (todoId: number) => void;
 }) => {
-  const { data: todoItems } = useSuspenseQuery(todoQueries.list());
   const itemCount = todoItems.tasks?.length ?? 0;
 
   return (
@@ -80,7 +80,9 @@ export const TodoSection = ({
             }}
           >
             <PlusIcon className="w-12 h-12 bg-gray-950 text-gray-0 rounded-full p-[14px]" />
-            <span className="text-gray-950 text-body2">눌러서 할 일 추가</span>
+            <span className="text-gray-950 text-body2">
+              눌러서 할 일 추가
+            </span>
           </button>
         </div>
       )}
@@ -97,7 +99,7 @@ export const TodoListItem = ({
   todo: TodoItem;
   isDone?: boolean;
   onDelete: () => void;
-  onUpdate: (todoId: number, formData: { name: string }) => void;
+  onUpdate: (formData: { name: string }) => void;
 }) => {
   return (
     <li
@@ -134,9 +136,7 @@ export const TodoListItem = ({
               <TodoUpdateModal
                 isOpen={isOpen}
                 close={close}
-                onSubmit={(formData: { name: string }) =>
-                  onUpdate(todo.taskId, formData)
-                }
+                onSubmit={(formData: { name: string }) => onUpdate(formData)}
               />
             ));
           }}

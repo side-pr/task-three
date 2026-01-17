@@ -7,6 +7,7 @@ import { MustTodoSection } from "@pages/todos/ui/must-todo-section";
 import { TodoSection } from "@pages/todos/ui/todo-section";
 import { mutationOptions, useMutation } from "@tanstack/react-query";
 import { todoUpdate } from "@pages/todos/api/todo-update";
+import { SuspenseQuery } from "@suspensive/react-query";
 export const TodoPage = () => {
   const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions());
   const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions());
@@ -19,16 +20,21 @@ export const TodoPage = () => {
 
         <div className="w-full flex flex-col gap-6">
           <MustTodoSection />
-          <TodoSection
-            onCreate={(formData: { name: string }) => createTodo(formData)}
-            onUpdate={(todoId: number, formData: { name: string }) =>
-              updateTodo({
-                pathParams: { taskId: todoId },
-                formData,
-              })
-            }
-            onDelete={(todoId) => deleteTodo({ taskId: todoId })}
-          />
+          <SuspenseQuery {...todoQueries.list()}>
+            {({ data: todoItems }) => (
+              <TodoSection
+                todoItems={todoItems}
+                onCreate={(formData: { name: string }) => createTodo(formData)}
+                onUpdate={(todoId: number, formData: { name: string }) =>
+                  updateTodo({
+                    pathParams: { taskId: todoId },
+                    formData,
+                  })
+                }
+                onDelete={(todoId) => deleteTodo({ taskId: todoId })}
+              />
+            )}
+          </SuspenseQuery>
         </div>
       </div>
     </main>
