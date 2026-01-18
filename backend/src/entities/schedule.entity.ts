@@ -16,7 +16,7 @@ export class Schedule extends BaseModel {
   @Column({ default: false })
   isCompleted: boolean;
 
-  @OneToOne(() => Task, { nullable: true })
+  @OneToOne(() => Task, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'task_id' })
   task: Task | null;
 }
