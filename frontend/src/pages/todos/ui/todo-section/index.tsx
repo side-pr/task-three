@@ -11,11 +11,15 @@ export const TodoSection = ({
   onCreate,
   onUpdate,
   onDelete,
+  onComplete,
+  onCancelComplete,
 }: {
   todoItems: { tasks: TodoItem[] };
   onCreate: (formData: { name: string }) => void;
   onUpdate: (todoId: number, formData: { name: string }) => void;
   onDelete: (todoId: number) => void;
+  onComplete: (todoId: number) => void;
+  onCancelComplete: (todoId: number) => void;
 }) => {
   const itemCount = todoItems.tasks?.length ?? 0;
 
@@ -53,11 +57,17 @@ export const TodoSection = ({
           <TodoListItem
             key={todo.taskId}
             todo={todo}
-            isDone={true}
             onDelete={() => onDelete(todo.taskId)}
             onUpdate={(formData: { name: string }) =>
               onUpdate(todo.taskId, formData)
             }
+            onToggleComplete={() => {
+              if (todo.isCompleted) {
+                onCancelComplete(todo.taskId);
+              } else {
+                onComplete(todo.taskId);
+              }
+            }}
           />
         ))}
       </ul>
@@ -92,42 +102,47 @@ export const TodoSection = ({
 
 export const TodoListItem = ({
   todo,
-  isDone = false,
   onDelete,
   onUpdate,
+  onToggleComplete,
 }: {
   todo: TodoItem;
-  isDone?: boolean;
   onDelete: () => void;
   onUpdate: (formData: { name: string }) => void;
+  onToggleComplete: () => void;
 }) => {
   return (
     <li
       className={cn(
         "w-full h-11 rounded-2xl text-gray-950 py-3 bg-gray-200 flex items-center justify-between",
-        isDone && "bg-gray-100 opacity-50"
+        todo.isCompleted && "bg-gray-100 opacity-50"
       )}
       key={todo.taskId}
     >
-      <div className="flex items-center">
+      <button
+        className="flex items-center flex-1"
+        onClick={onToggleComplete}
+      >
         <div className="w-11 h-11 flex items-center justify-center relative">
           <div
             className={cn(
               "w-5 h-5 border border-gray-400 rounded-full bg-gray-100",
-              isDone && "bg-gray-600"
+              todo.isCompleted && "bg-gray-600"
             )}
           />
-          {isDone && <CheckIcon className="absolute w-4 h-4 text-gray-0" />}
+          {todo.isCompleted && (
+            <CheckIcon className="absolute w-4 h-4 text-gray-0" />
+          )}
         </div>
         <span
           className={cn(
             "text-body1 text-gray-950 font-regular",
-            isDone && "line-through"
+            todo.isCompleted && "line-through"
           )}
         >
           {todo.name}
         </span>
-      </div>
+      </button>
       <div className="flex items-center">
         <button
           className="w-11 h-11 flex items-center justify-center"

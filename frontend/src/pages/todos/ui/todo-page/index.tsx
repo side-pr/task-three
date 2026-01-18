@@ -8,10 +8,18 @@ import { TodoSection } from "@pages/todos/ui/todo-section";
 import { mutationOptions, useMutation } from "@tanstack/react-query";
 import { todoUpdate } from "@pages/todos/api/todo-update";
 import { SuspenseQuery } from "@suspensive/react-query";
+import { todoComplete } from "@pages/todos/api/todo-complete";
+import { todoCancelComplete } from "@pages/todos/api/todo-cancel-complete";
 export const TodoPage = () => {
   const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions());
   const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions());
   const { mutateAsync: deleteTodo } = useMutation(todoDeleteMutationOptions());
+  const { mutateAsync: completeTodo } = useMutation(
+    todoCompleteMutationOptions()
+  );
+  const { mutateAsync: cancelCompleteTodo } = useMutation(
+    todoCancelCompleteMutationOptions()
+  );
 
   return (
     <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
@@ -32,6 +40,10 @@ export const TodoPage = () => {
                   })
                 }
                 onDelete={(todoId) => deleteTodo({ taskId: todoId })}
+                onComplete={(todoId) => completeTodo({ taskId: todoId })}
+                onCancelComplete={(todoId) =>
+                  cancelCompleteTodo({ taskId: todoId })
+                }
               />
             )}
           </SuspenseQuery>
@@ -60,6 +72,24 @@ const todoCreateMutationOptions = () => {
 const todoDeleteMutationOptions = () => {
   return mutationOptions({
     mutationFn: todoDelete,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(todoQueries.list());
+    },
+  });
+};
+
+const todoCompleteMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: todoComplete,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(todoQueries.list());
+    },
+  });
+};
+
+const todoCancelCompleteMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: todoCancelComplete,
     onSuccess: () => {
       getQueryClient().invalidateQueries(todoQueries.list());
     },
