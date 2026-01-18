@@ -4,23 +4,37 @@ import { TodoUpdateModal } from "@pages/todos/ui/todo-update-modal";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
 import { overlay } from "overlay-kit";
+import { useDraggable } from "@dnd-kit/core";
 
 export const TodoListItem = ({
   todo,
   onDelete,
   onUpdate,
   onToggleComplete,
+  draggable = false,
 }: {
   todo: TodoItem;
   onDelete: () => void;
   onUpdate: (formData: { name: string }) => void;
   onToggleComplete: () => void;
+  draggable?: boolean;
 }) => {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `todo-${todo.taskId}`,
+    data: { taskId: todo.taskId, taskName: todo.name, isCompleted: todo.isCompleted },
+    disabled: !draggable,
+  });
+
   return (
     <li
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
       className={cn(
         "w-full h-11 rounded-2xl text-gray-950 py-3 bg-gray-200 flex items-center justify-between",
-        todo.isCompleted && "bg-gray-100 opacity-50"
+        todo.isCompleted && "bg-gray-100 opacity-50",
+        draggable && "cursor-move",
+        isDragging && "opacity-50"
       )}
       key={todo.taskId}
     >

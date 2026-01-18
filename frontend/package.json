@@ -11,6 +11,9 @@
     "svgr": "npx @svgr/cli -d src/shared/ui/icons --typescript --no-dimensions --no-prettier public/icons"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
     "@suspensive/react": "^3.18.0",
     "@suspensive/react-query": "^3.18.0",

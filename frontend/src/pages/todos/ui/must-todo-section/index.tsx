@@ -1,6 +1,7 @@
 import { ScheduleItem } from "@pages/todos/api/schedule-get-list";
 import { TodoListItem } from "@pages/todos/ui/todo-list-item";
 import { Badge } from "@shared/ui";
+import { useDroppable } from "@dnd-kit/core";
 
 export const MustTodoSection = ({
   scheduleItems,
@@ -12,8 +13,15 @@ export const MustTodoSection = ({
     scheduleItems.schedules?.filter((schedule) => schedule.isCompleted)
       .length ?? 0;
 
+  const { setNodeRef, isOver } = useDroppable({
+    id: "must-todo-section",
+  });
+
   return (
-    <section>
+    <section
+      ref={setNodeRef}
+      className={isOver ? "ring-2 ring-blue-500 rounded-2xl" : ""}
+    >
       <div className="flex justify-between">
         <div>
           <h2 className="text-title2 font-semibold">오늘 할 일</h2>
@@ -43,6 +51,7 @@ export const MustTodoSection = ({
                 name: schedule.taskName,
                 isCompleted: schedule.isCompleted,
               }}
+              draggable={false}
               onDelete={() => {
                 // TODO: implement schedule delete
                 console.log("delete schedule", schedule.scheduleId);

@@ -55,6 +55,7 @@ export const TodoSection = ({
           <TodoListItem
             key={todo.taskId}
             todo={todo}
+            draggable={true}
             onDelete={() => onDelete(todo.taskId)}
             onUpdate={(formData: { name: string }) =>
               onUpdate(todo.taskId, formData)
