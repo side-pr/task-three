@@ -75,6 +75,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/schedules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 스케줄 목록 조회 */
+        get: operations["ScheduleController_findAll"];
+        put?: never;
+        /** 스케줄 등록 */
+        post: operations["ScheduleController_createSchedule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/schedules/{taskId}": {
         parameters: {
             query?: never;
@@ -86,23 +104,6 @@ export interface paths {
         get: operations["ScheduleController_getDetail"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/schedules": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** 스케줄 등록 */
-        post: operations["ScheduleController_createSchedule"];
         delete?: never;
         options?: never;
         head?: never;
@@ -231,6 +232,47 @@ export interface components {
         TaskUpdateRequest: {
             /** @description 할일 이름 */
             name: string;
+        };
+        ScheduleItemResponse: {
+            /**
+             * @description 스케줄 ID
+             * @example 1
+             */
+            scheduleId: number;
+            /**
+             * @description 할 일 ID
+             * @example 1
+             */
+            taskId: number;
+            /**
+             * @description 할 일 이름
+             * @example 프로젝트 회의
+             */
+            taskName: string;
+            /**
+             * @description 시작 시간
+             * @example 09:00:00
+             */
+            startTime: string;
+            /**
+             * @description 종료 시간
+             * @example 10:00:00
+             */
+            endTime: string;
+            /**
+             * @description 대상 날짜
+             * @example 2026-01-18
+             */
+            targetDate: string;
+            /**
+             * @description 완료 여부
+             * @example false
+             */
+            isCompleted: boolean;
+        };
+        ScheduleListResponse: {
+            /** @description 스케줄 목록 */
+            schedules: components["schemas"]["ScheduleItemResponse"][];
         };
         ScheduleCreateRequest: {
             /** @description 할 일 ID */
@@ -410,24 +452,22 @@ export interface operations {
             };
         };
     };
-    ScheduleController_getDetail: {
+    ScheduleController_findAll: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                scheduleId: number;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description 할 일 상세 조회 성공 */
+            /** @description 스케줄 목록 조회 성공 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ServiceApiResponse"];
+                    "application/json": components["schemas"]["ScheduleListResponse"];
                 };
             };
         };
@@ -456,11 +496,35 @@ export interface operations {
             };
         };
     };
+    ScheduleController_getDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                scheduleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 할 일 상세 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ServiceApiResponse"];
+                };
+            };
+        };
+    };
     ScheduleController_updateSchedule: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                scheduleId: number;
+            };
             cookie?: never;
         };
         requestBody: {

@@ -2,6 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScheduleCreateRequest } from 'src/dto/schedule-create-request.dto';
 import { ScheduleDetailResponse } from 'src/dto/schedule-detail-response.dto';
+import {
+  ScheduleItemResponse,
+  ScheduleListResponse,
+} from 'src/dto/schedule-list-response.dto';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Task } from 'src/entities/task.entity';
 import { Repository } from 'typeorm';
@@ -14,6 +18,31 @@ export class ScheduleService {
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
   ) {}
+
+  async findAll(): Promise<ScheduleListResponse> {
+    const schedules = await this.scheduleRepository.find({
+      relations: ['task'],
+      order: {
+        targetDate: 'ASC',
+        startTime: 'ASC',
+      },
+    });
+
+    const scheduleItems = schedules.map(
+      (schedule) =>
+        new ScheduleItemResponse(
+          schedule.id,
+          schedule.task?.id || 0,
+          schedule.task?.name || '',
+          schedule.startTime,
+          schedule.endTime,
+          schedule.targetDate,
+          schedule.isCompleted,
+        ),
+    );
+
+    return new ScheduleListResponse(scheduleItems);
+  }
 
   async create(scheduleCreateRequest: ScheduleCreateRequest): Promise<number> {
     const { taskId, ...scheduleData } = scheduleCreateRequest;
@@ -35,6 +64,38 @@ export class ScheduleService {
 
     const savedSchedule = await this.scheduleRepository.save(schedule);
     return savedSchedule.id;
+  }
+
+  async update(
+    scheduleId: number,
+    scheduleCreateRequest: ScheduleCreateRequest,
+  ): Promise<void> {
+    const schedule = await this.scheduleRepository.findOne({
+      where: { id: scheduleId },
+    });
+
+    if (!schedule) {
+      throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
+    }
+
+    const { taskId, ...scheduleData } = scheduleCreateRequest;
+
+    // taskId로 Task 조회
+    const task = await this.taskRepository.findOne({
+      where: { id: taskId },
+    });
+
+    if (!task) {
+      throw new NotFoundException(`Task with id ${taskId} not found`);
+    }
+
+    // Schedule 업데이트
+    Object.assign(schedule, {
+      ...scheduleData,
+      task,
+    });
+
+    await this.scheduleRepository.save(schedule);
   }
 
   async getDetail(scheduleId: number): Promise<ScheduleDetailResponse> {

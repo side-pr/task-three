@@ -10,6 +10,7 @@ import { todoUpdate } from "@pages/todos/api/todo-update";
 import { SuspenseQuery } from "@suspensive/react-query";
 import { todoComplete } from "@pages/todos/api/todo-complete";
 import { todoCancelComplete } from "@pages/todos/api/todo-cancel-complete";
+import { scheduleQueries } from "@pages/todos/api/schedule.queries";
 export const TodoPage = () => {
   const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions());
   const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions());
@@ -27,7 +28,11 @@ export const TodoPage = () => {
         <DateSelectSection />
 
         <div className="w-full flex flex-col gap-6">
-          <MustTodoSection />
+          <SuspenseQuery {...scheduleQueries.list()}>
+            {({ data: scheduleItems }) => (
+              <MustTodoSection scheduleItems={scheduleItems} />
+            )}
+          </SuspenseQuery>
           <SuspenseQuery {...todoQueries.list()}>
             {({ data: todoItems }) => (
               <TodoSection
