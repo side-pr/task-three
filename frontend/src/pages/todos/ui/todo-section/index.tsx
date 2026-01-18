@@ -79,6 +79,7 @@ export const TodoSection = ({
           }}
         >
           <button
+            className="flex flex-col items-center justify-center"
             onClick={() => {
               overlay.open(({ isOpen, close }) => (
                 <TodoCreateModal
@@ -90,10 +91,8 @@ export const TodoSection = ({
             }}
           >
             <PlusIcon className="w-12 h-12 bg-gray-950 text-gray-0 rounded-full p-[14px]" />
-            <span className="text-gray-950 text-body2">
-              눌러서 할 일 추가
-            </span>
           </button>
+          <span className="text-gray-950 text-body2">눌러서 할 일 추가</span>
         </div>
       )}
     </section>
@@ -119,10 +118,7 @@ export const TodoListItem = ({
       )}
       key={todo.taskId}
     >
-      <button
-        className="flex items-center flex-1"
-        onClick={onToggleComplete}
-      >
+      <button className="flex items-center flex-1" onClick={onToggleComplete}>
         <div className="w-11 h-11 flex items-center justify-center relative">
           <div
             className={cn(
