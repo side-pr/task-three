@@ -82,6 +82,7 @@ export const TodoPage = () => {
                 />
               )}
             </SuspenseQuery>
+            
             <SuspenseQuery {...todoQueries.list()}>
               {({ data: todoItems }) => (
                 <TodoSection

@@ -3,10 +3,16 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import React, { useState } from "react";
 
 export type DragData = Record<string, unknown>;
+
+const ACTIVATION_DELAY_MS = 200;
 
 export const DndProvider = <T extends DragData>({
   children,
@@ -18,6 +24,21 @@ export const DndProvider = <T extends DragData>({
   renderOverlay?: (activeItem: T | null) => React.ReactNode;
 }) => {
   const [activeItem, setActiveItem] = useState<T | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: ACTIVATION_DELAY_MS,
+        tolerance: 5,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: ACTIVATION_DELAY_MS,
+        tolerance: 5,
+      },
+    })
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveItem(event.active.data.current as T);
@@ -36,6 +57,7 @@ export const DndProvider = <T extends DragData>({
 
   return (
     <DndContext
+      sensors={sensors}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
