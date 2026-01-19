@@ -12,11 +12,15 @@ import { todoComplete } from "@pages/todos/api/todo-complete";
 import { todoCancelComplete } from "@pages/todos/api/todo-cancel-complete";
 import { scheduleQueries } from "@pages/todos/api/schedule.queries";
 import { scheduleCreate } from "@pages/todos/api/schedule-create";
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { DndProvider } from "@shared/ui";
 import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@pages/todos/ui/schedule-create-modal";
-import { useState } from "react";
-import { TodoItem } from "@pages/todos/api/todo-get-list";
+
+type TodoDragData = {
+  taskId: number;
+  taskName: string;
+  isCompleted: boolean;
+};
 
 export const TodoPage = () => {
   const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions());
@@ -32,34 +36,16 @@ export const TodoPage = () => {
     scheduleCreateMutationOptions()
   );
 
-  const [activeTodo, setActiveTodo] = useState<TodoItem | null>(null);
-
-  const handleDragStart = (event: DragStartEvent) => {
-    const { taskId, taskName, isCompleted } = event.active.data.current as {
-      taskId: number;
-      taskName: string;
-      isCompleted: boolean;
-    };
-    setActiveTodo({ taskId, name: taskName, isCompleted });
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    setActiveTodo(null);
-
-    if (event.over?.id === "must-todo-section") {
-      const { taskId, taskName } = event.active.data.current as {
-        taskId: number;
-        taskName: string;
-      };
-
+  const handleDragEnd = (data: TodoDragData, overId: string | null) => {
+    if (overId === "must-todo-section") {
       overlay.open(({ isOpen, close }) => (
         <ScheduleCreateModal
           isOpen={isOpen}
           close={close}
-          todoName={taskName}
+          todoName={data.taskName}
           onConfirm={(formData) => {
             createSchedule({
-              taskId,
+              taskId: data.taskId,
               startTime: formData.startTime + ":00",
               endTime: formData.endTime + ":00",
               targetDate: new Date().toISOString().split("T")[0],
@@ -71,15 +57,18 @@ export const TodoPage = () => {
     }
   };
 
-  const handleDragCancel = () => {
-    setActiveTodo(null);
-  };
-
   return (
-    <DndContext
-      onDragStart={handleDragStart}
+    <DndProvider<TodoDragData>
       onDragEnd={handleDragEnd}
-      onDragCancel={handleDragCancel}
+      renderOverlay={(activeItem) =>
+        activeItem ? (
+          <div className="w-full h-11 rounded-2xl text-gray-950 py-3 bg-gray-200 flex items-center justify-between px-4 cursor-grabbing shadow-lg">
+            <span className="text-body1 text-gray-950 font-regular">
+              {activeItem.taskName}
+            </span>
+          </div>
+        ) : null
+      }
     >
       <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
         <div className="w-full h-full flex flex-col items-center gap-6  px-6">
@@ -115,16 +104,7 @@ export const TodoPage = () => {
           </div>
         </div>
       </main>
-      <DragOverlay>
-        {activeTodo ? (
-          <div className="w-full h-11 rounded-2xl text-gray-950 py-3 bg-gray-200 flex items-center justify-between px-4 cursor-grabbing shadow-lg">
-            <span className="text-body1 text-gray-950 font-regular">
-              {activeTodo.name}
-            </span>
-          </div>
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+    </DndProvider>
   );
 };
 const todoUpdateMutationOptions = () => {
