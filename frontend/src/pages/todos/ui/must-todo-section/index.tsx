@@ -4,8 +4,14 @@ import { Badge, Droppable } from "@shared/ui";
 
 export const MustTodoSection = ({
   scheduleItems,
+  onDelete,
+  onComplete,
+  onCancelComplete,
 }: {
   scheduleItems: { schedules: ScheduleItem[] };
+  onDelete: (scheduleId: number) => void;
+  onComplete: (scheduleId: number) => void;
+  onCancelComplete: (scheduleId: number) => void;
 }) => {
   const itemCount = scheduleItems.schedules?.length ?? 0;
   const completedCount =
@@ -48,17 +54,14 @@ export const MustTodoSection = ({
                     name: schedule.taskName,
                     isCompleted: schedule.isCompleted,
                   }}
-                  onDelete={() => {
-                    // TODO: implement schedule delete
-                    console.log("delete schedule", schedule.scheduleId);
-                  }}
-                  onUpdate={() => {
-                    // TODO: implement schedule update
-                    console.log("update schedule", schedule.scheduleId);
-                  }}
+                  onDelete={() => onDelete(schedule.scheduleId)}
+                  onUpdate={() => {}}
                   onToggleComplete={() => {
-                    // TODO: implement schedule toggle complete
-                    console.log("toggle schedule", schedule.scheduleId);
+                    if (schedule.isCompleted) {
+                      onCancelComplete(schedule.scheduleId);
+                    } else {
+                      onComplete(schedule.scheduleId);
+                    }
                   }}
                 />
               ))}

@@ -12,6 +12,9 @@ import { todoComplete } from "@pages/todos/api/todo-complete";
 import { todoCancelComplete } from "@pages/todos/api/todo-cancel-complete";
 import { scheduleQueries } from "@pages/todos/api/schedule.queries";
 import { scheduleCreate } from "@pages/todos/api/schedule-create";
+import { scheduleDelete } from "@pages/todos/api/schedule-delete";
+import { scheduleComplete } from "@pages/todos/api/schedule-complete";
+import { scheduleCancelComplete } from "@pages/todos/api/schedule-cancel-complete";
 import { DndProvider } from "@shared/ui";
 import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@pages/todos/ui/schedule-create-modal";
@@ -34,6 +37,15 @@ export const TodoPage = () => {
   );
   const { mutateAsync: createSchedule } = useMutation(
     scheduleCreateMutationOptions()
+  );
+  const { mutateAsync: deleteSchedule } = useMutation(
+    scheduleDeleteMutationOptions()
+  );
+  const { mutateAsync: completeSchedule } = useMutation(
+    scheduleCompleteMutationOptions()
+  );
+  const { mutateAsync: cancelCompleteSchedule } = useMutation(
+    scheduleCancelCompleteMutationOptions()
   );
 
   const handleDragEnd = (data: TodoDragData, overId: string | null) => {
@@ -79,6 +91,11 @@ export const TodoPage = () => {
               {({ data: scheduleItems }) => (
                 <MustTodoSection
                   scheduleItems={scheduleItems}
+                  onDelete={(scheduleId) => deleteSchedule({ scheduleId })}
+                  onComplete={(scheduleId) => completeSchedule({ scheduleId })}
+                  onCancelComplete={(scheduleId) =>
+                    cancelCompleteSchedule({ scheduleId })
+                  }
                 />
               )}
             </SuspenseQuery>
@@ -155,6 +172,33 @@ const todoCancelCompleteMutationOptions = () => {
 const scheduleCreateMutationOptions = () => {
   return mutationOptions({
     mutationFn: scheduleCreate,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(scheduleQueries.list());
+    },
+  });
+};
+
+const scheduleDeleteMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: scheduleDelete,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(scheduleQueries.list());
+    },
+  });
+};
+
+const scheduleCompleteMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: scheduleComplete,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(scheduleQueries.list());
+    },
+  });
+};
+
+const scheduleCancelCompleteMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: scheduleCancelComplete,
     onSuccess: () => {
       getQueryClient().invalidateQueries(scheduleQueries.list());
     },
