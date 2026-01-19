@@ -1,5 +1,6 @@
 import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { TodoCreateModal } from "@pages/todos/ui/todo-create-modal";
+import { Draggable } from "@shared/ui/draggable";
 import { TodoListItem } from "@pages/todos/ui/todo-list-item";
 import { PlusIcon } from "@shared/ui/icons";
 import { overlay } from "overlay-kit";
@@ -52,22 +53,32 @@ export const TodoSection = ({
 
       <ul className="flex flex-col gap-2">
         {todoItems?.tasks?.map((todo) => (
-          <TodoListItem
+          <Draggable
             key={todo.taskId}
-            todo={todo}
-            draggable={true}
-            onDelete={() => onDelete(todo.taskId)}
-            onUpdate={(formData: { name: string }) =>
-              onUpdate(todo.taskId, formData)
-            }
-            onToggleComplete={() => {
-              if (todo.isCompleted) {
-                onCancelComplete(todo.taskId);
-              } else {
-                onComplete(todo.taskId);
-              }
-            }}
-          />
+            id={`todo-${todo.taskId}`}
+            data={{ taskId: todo.taskId, taskName: todo.name, isCompleted: todo.isCompleted }}
+          >
+            {({ ref, listeners, attributes, isDragging }) => (
+              <TodoListItem
+                ref={ref}
+                {...listeners}
+                {...attributes}
+                className={`cursor-move ${isDragging ? "opacity-50" : ""}`}
+                todo={todo}
+                onDelete={() => onDelete(todo.taskId)}
+                onUpdate={(formData: { name: string }) =>
+                  onUpdate(todo.taskId, formData)
+                }
+                onToggleComplete={() => {
+                  if (todo.isCompleted) {
+                    onCancelComplete(todo.taskId);
+                  } else {
+                    onComplete(todo.taskId);
+                  }
+                }}
+              />
+            )}
+          </Draggable>
         ))}
       </ul>
       {itemCount === 0 && (

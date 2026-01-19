@@ -4,39 +4,27 @@ import { TodoUpdateModal } from "@pages/todos/ui/todo-update-modal";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
 import { overlay } from "overlay-kit";
-import { useDraggable } from "@dnd-kit/core";
+import React from "react";
 
-export const TodoListItem = ({
-  todo,
-  onDelete,
-  onUpdate,
-  onToggleComplete,
-  draggable = false,
-}: {
-  todo: TodoItem;
-  onDelete: () => void;
-  onUpdate: (formData: { name: string }) => void;
-  onToggleComplete: () => void;
-  draggable?: boolean;
-}) => {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: `todo-${todo.taskId}`,
-    data: { taskId: todo.taskId, taskName: todo.name, isCompleted: todo.isCompleted },
-    disabled: !draggable,
-  });
-
+export const TodoListItem = React.forwardRef<
+  HTMLLIElement,
+  {
+    todo: TodoItem;
+    onDelete: () => void;
+    onUpdate: (formData: { name: string }) => void;
+    onToggleComplete: () => void;
+    className?: string;
+  } & React.HTMLAttributes<HTMLLIElement>
+>(({ todo, onDelete, onUpdate, onToggleComplete, className, ...props }, ref) => {
   return (
     <li
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
+      ref={ref}
+      {...props}
       className={cn(
         "w-full h-11 rounded-2xl text-gray-950 py-3 bg-gray-200 flex items-center justify-between",
         todo.isCompleted && "bg-gray-100 opacity-50",
-        draggable && "cursor-move",
-        isDragging && "opacity-50"
+        className
       )}
-      key={todo.taskId}
     >
       <button className="flex items-center flex-1" onClick={onToggleComplete}>
         <div className="w-11 h-11 flex items-center justify-center relative">
@@ -92,4 +80,4 @@ export const TodoListItem = ({
       </div>
     </li>
   );
-};
+});

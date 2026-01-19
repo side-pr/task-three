@@ -51,7 +51,6 @@ export const MustTodoSection = ({
                 name: schedule.taskName,
                 isCompleted: schedule.isCompleted,
               }}
-              draggable={false}
               onDelete={() => {
                 // TODO: implement schedule delete
                 console.log("delete schedule", schedule.scheduleId);
