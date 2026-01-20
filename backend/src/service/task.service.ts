@@ -6,6 +6,7 @@ import {
   TaskItemResponse,
   TaskListResponse,
 } from 'src/dto/task-list-response.dto';
+import { Schedule } from 'src/entities/schedule.entity';
 import { Task } from 'src/entities/task.entity';
 import { Repository } from 'typeorm';
 
@@ -14,6 +15,8 @@ export class TaskService {
   constructor(
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
+    @InjectRepository(Schedule)
+    private readonly scheduleRepository: Repository<Schedule>,
   ) {}
 
   async findAll(): Promise<TaskListResponse> {
@@ -23,7 +26,21 @@ export class TaskService {
       },
     });
 
-    const taskItems = tasks.map(
+    const schedules = await this.scheduleRepository.find({
+      relations: ['task'],
+    });
+
+    // schedule에 연결된 task id 목록
+    const scheduledTaskIds = schedules
+      .filter((schedule) => schedule.task !== null)
+      .map((schedule) => schedule.task!.id);
+
+    // schedule에 없는 task만 필터링
+    const filteredTasks = tasks.filter(
+      (task) => !scheduledTaskIds.includes(task.id),
+    );
+
+    const taskItems = filteredTasks.map(
       (task) => new TaskItemResponse(task.id, task.name, task.isCompleted),
     );
 
