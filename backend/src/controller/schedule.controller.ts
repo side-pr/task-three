@@ -102,16 +102,29 @@ export class ScheduleController {
     return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
   }
 
-  @Delete(':scheduleId')
-  @ApiOperation({ summary: '스케줄 삭제 (할일 목록으로 이동)' })
+  @Put(':scheduleId/move-to-todo-list')
+  @ApiOperation({ summary: '스케줄 할일 목록으로 이동)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: '스케줄 삭제 성공',
+    description: '스케줄 할일 목록으로 이동 성공',
   })
-  async deleteSchedule(
+  async moveToScheduleList(
     @Param('scheduleId') scheduleId: number,
   ): Promise<ServiceApiResponse<void>> {
-    await this.scheduleService.moveToTaskList(scheduleId);
+    await this.scheduleService.moveToTodoList(scheduleId);
+    return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
+  }
+
+  @Delete(':scheduleId')
+  @ApiOperation({ summary: '스케줄 삭제)' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: '스케줄 삭제',
+  })
+  async moveToTodoList(
+    @Param('scheduleId') scheduleId: number,
+  ): Promise<ServiceApiResponse<void>> {
+    await this.scheduleService.delete(scheduleId);
     return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
   }
 }

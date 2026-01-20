@@ -124,7 +124,7 @@ export class ScheduleService {
     );
   }
 
-  async moveToTaskList(scheduleId: number): Promise<void> {
+  async moveToTodoList(scheduleId: number): Promise<void> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id: scheduleId },
     });
@@ -157,5 +157,25 @@ export class ScheduleService {
     }
     schedule.isCompleted = false;
     await this.scheduleRepository.save(schedule);
+  }
+
+  async delete(scheduleId: number): Promise<void> {
+    const schedule = await this.scheduleRepository.findOne({
+      where: { id: scheduleId },
+    });
+    if (!schedule) {
+      throw new NotFoundException('스케줄을 찾을 수 없습니다.');
+    }
+    const task = await this.taskRepository.findOne({
+      where: { id: schedule.task?.id },
+    });
+    if (!task) {
+      throw new NotFoundException(
+        'Task with id ${schedule.task?.id} not found',
+      );
+    }
+
+    await this.taskRepository.remove(task);
+    await this.scheduleRepository.remove(schedule);
   }
 }
