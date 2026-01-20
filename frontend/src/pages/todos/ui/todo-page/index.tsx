@@ -174,6 +174,7 @@ const scheduleCreateMutationOptions = () => {
     mutationFn: scheduleCreate,
     onSuccess: () => {
       getQueryClient().invalidateQueries(scheduleQueries.list());
+      getQueryClient().invalidateQueries(todoQueries.list());
     },
   });
 };
