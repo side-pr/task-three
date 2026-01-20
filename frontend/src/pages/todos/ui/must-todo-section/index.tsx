@@ -1,6 +1,7 @@
 import { ScheduleItem } from "@pages/todos/api/schedule-get-list";
 import { TodoListItem } from "@pages/todos/ui/todo-list-item";
 import { Badge, Droppable } from "@shared/ui";
+import { Draggable } from "@shared/ui/draggable";
 
 export const MustTodoSection = ({
   scheduleItems,
@@ -14,10 +15,7 @@ export const MustTodoSection = ({
   onCancelComplete: (scheduleId: number) => void;
 }) => {
   const itemCount = scheduleItems.schedules?.length ?? 0;
-  const completedCount =
-    scheduleItems.schedules?.filter((schedule) => schedule.isCompleted)
-      .length ?? 0;
-
+ 
   return (
     <Droppable id="must-todo-section">
       {({ ref, isOver }) => (
@@ -33,7 +31,7 @@ export const MustTodoSection = ({
               </p>
             </div>
             <Badge>
-              {completedCount}/{itemCount}
+              {scheduleItems.schedules.length}/{3}
             </Badge>
           </div>
 
@@ -47,23 +45,39 @@ export const MustTodoSection = ({
           ) : (
             <ul className="flex flex-col gap-2 mt-3">
               {scheduleItems.schedules.map((schedule) => (
-                <TodoListItem
+                <Draggable
                   key={schedule.scheduleId}
-                  todo={{
+                  id={`schedule-${schedule.scheduleId}`}
+                  data={{
+                    scheduleId: schedule.scheduleId,
                     taskId: schedule.taskId,
-                    name: schedule.taskName,
+                    taskName: schedule.taskName,
                     isCompleted: schedule.isCompleted,
                   }}
-                  onDelete={() => onDelete(schedule.scheduleId)}
-                  onUpdate={() => {}}
-                  onToggleComplete={() => {
-                    if (schedule.isCompleted) {
-                      onCancelComplete(schedule.scheduleId);
-                    } else {
-                      onComplete(schedule.scheduleId);
-                    }
-                  }}
-                />
+                >
+                  {({ ref, listeners, attributes, isDragging }) => (
+                    <TodoListItem
+                      ref={ref}
+                      {...listeners}
+                      {...attributes}
+                      className={`cursor-move ${isDragging ? "opacity-50" : ""}`}
+                      todo={{
+                        taskId: schedule.taskId,
+                        name: schedule.taskName,
+                        isCompleted: schedule.isCompleted,
+                      }}
+                      onDelete={() => onDelete(schedule.scheduleId)}
+                      onUpdate={() => {}}
+                      onToggleComplete={() => {
+                        if (schedule.isCompleted) {
+                          onCancelComplete(schedule.scheduleId);
+                        } else {
+                          onComplete(schedule.scheduleId);
+                        }
+                      }}
+                    />
+                  )}
+                </Draggable>
               ))}
             </ul>
           )}

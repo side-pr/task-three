@@ -121,8 +121,8 @@ export interface paths {
         /** 스케줄 내용 수정 */
         put: operations["ScheduleController_updateSchedule"];
         post?: never;
-        /** 스케줄 완료 취소 */
-        delete: operations["ScheduleController_cancelComplete"];
+        /** 스케줄 삭제) */
+        delete: operations["ScheduleController_moveToTodoList"];
         options?: never;
         head?: never;
         patch?: never;
@@ -153,8 +153,25 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** 스케줄을 할일 목록으로 이동 */
-        put: operations["ScheduleController_moveToTaskList"];
+        /** 스케줄 완료 취소 */
+        put: operations["ScheduleController_cancelComplete"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/schedules/{scheduleId}/move-to-todo-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** 스케줄 할일 목록으로 이동) */
+        put: operations["ScheduleController_moveToScheduleList"];
         post?: never;
         delete?: never;
         options?: never;
@@ -544,7 +561,7 @@ export interface operations {
             };
         };
     };
-    ScheduleController_cancelComplete: {
+    ScheduleController_moveToTodoList: {
         parameters: {
             query?: never;
             header?: never;
@@ -555,8 +572,8 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 스케줄 완료 취소 성공 */
-            200: {
+            /** @description 스케줄 삭제 */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -584,7 +601,7 @@ export interface operations {
             };
         };
     };
-    ScheduleController_moveToTaskList: {
+    ScheduleController_cancelComplete: {
         parameters: {
             query?: never;
             header?: never;
@@ -595,7 +612,27 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 스케줄을 할일 목록으로 이동 성공 */
+            /** @description 스케줄 완료 취소 성공 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ScheduleController_moveToScheduleList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                scheduleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 스케줄 할일 목록으로 이동 성공 */
             204: {
                 headers: {
                     [name: string]: unknown;

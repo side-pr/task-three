@@ -13,13 +13,15 @@ import { todoCancelComplete } from "@pages/todos/api/todo-cancel-complete";
 import { scheduleQueries } from "@pages/todos/api/schedule.queries";
 import { scheduleCreate } from "@pages/todos/api/schedule-create";
 import { scheduleDelete } from "@pages/todos/api/schedule-delete";
+import { scheduleMoveToTodoList } from "@pages/todos/api/schedule-move-to-todo-list";
 import { scheduleComplete } from "@pages/todos/api/schedule-complete";
 import { scheduleCancelComplete } from "@pages/todos/api/schedule-cancel-complete";
 import { DndProvider } from "@shared/ui";
 import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@pages/todos/ui/schedule-create-modal";
 
-type TodoDragData = {
+type DragData = {
+  scheduleId?: number;
   taskId: number;
   taskName: string;
   isCompleted: boolean;
@@ -47,9 +49,13 @@ export const TodoPage = () => {
   const { mutateAsync: cancelCompleteSchedule } = useMutation(
     scheduleCancelCompleteMutationOptions()
   );
+  const { mutateAsync: moveScheduleToTodoList } = useMutation(
+    scheduleMoveToTodoListMutationOptions()
+  );
 
-  const handleDragEnd = (data: TodoDragData, overId: string | null) => {
-    if (overId === "must-todo-section") {
+  const handleDragEnd = (data: DragData, overId: string | null) => {
+    // todo -> must-todo: schedule 생성
+    if (overId === "must-todo-section" && !data.scheduleId) {
       overlay.open(({ isOpen, close }) => (
         <ScheduleCreateModal
           isOpen={isOpen}
@@ -67,10 +73,15 @@ export const TodoPage = () => {
         />
       ));
     }
+
+    // must-todo -> todo: 할 일 목록으로 이동
+    if (overId === "todo-section" && data.scheduleId) {
+      moveScheduleToTodoList({ scheduleId: data.scheduleId });
+    }
   };
 
   return (
-    <DndProvider<TodoDragData>
+    <DndProvider<DragData>
       onDragEnd={handleDragEnd}
       renderOverlay={(activeItem) =>
         activeItem ? (
@@ -184,6 +195,7 @@ const scheduleDeleteMutationOptions = () => {
     mutationFn: scheduleDelete,
     onSuccess: () => {
       getQueryClient().invalidateQueries(scheduleQueries.list());
+      getQueryClient().invalidateQueries(todoQueries.list());
     },
   });
 };
@@ -202,6 +214,16 @@ const scheduleCancelCompleteMutationOptions = () => {
     mutationFn: scheduleCancelComplete,
     onSuccess: () => {
       getQueryClient().invalidateQueries(scheduleQueries.list());
+    },
+  });
+};
+
+const scheduleMoveToTodoListMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: scheduleMoveToTodoList,
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(scheduleQueries.list());
+      getQueryClient().invalidateQueries(todoQueries.list());
     },
   });
 };
