@@ -78,7 +78,7 @@ export class ScheduleService {
       throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
     }
 
-    const { taskId, ...scheduleData } = scheduleCreateRequest;
+    const { taskId, name, ...scheduleData } = scheduleCreateRequest;
 
     // taskId로 Task 조회
     const task = await this.taskRepository.findOne({
@@ -87,6 +87,12 @@ export class ScheduleService {
 
     if (!task) {
       throw new NotFoundException(`Task with id ${taskId} not found`);
+    }
+
+    // Task 이름 업데이트 (name이 제공된 경우)
+    if (name) {
+      task.name = name;
+      await this.taskRepository.save(task);
     }
 
     // Schedule 업데이트

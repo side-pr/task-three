@@ -6,11 +6,13 @@ import { Draggable } from "@shared/ui/draggable";
 export const MustTodoSection = ({
   scheduleItems,
   onDelete,
+  onUpdate,
   onComplete,
   onCancelComplete,
 }: {
   scheduleItems: { schedules: ScheduleItem[] };
   onDelete: (scheduleId: number) => void;
+  onUpdate: (schedule: ScheduleItem) => void;
   onComplete: (scheduleId: number) => void;
   onCancelComplete: (scheduleId: number) => void;
 }) => {
@@ -68,6 +70,7 @@ export const MustTodoSection = ({
                       }}
                       onDelete={() => onDelete(schedule.scheduleId)}
                       onUpdate={() => {}}
+                      onEdit={() => onUpdate(schedule)}
                       onToggleComplete={() => {
                         if (schedule.isCompleted) {
                           onCancelComplete(schedule.scheduleId);

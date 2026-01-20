@@ -1,10 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, Matches } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString, Matches } from 'class-validator';
 
 export class ScheduleCreateRequest {
   @ApiProperty({ description: '할 일 ID' })
   @IsNumber()
   taskId: number;
+
+  @ApiPropertyOptional({ description: '할 일 이름', example: '프로젝트 회의' })
+  @IsOptional()
+  @IsString()
+  name?: string;
 
   @ApiProperty({ description: '스케줄 시작 시간', example: '08:00:00' })
   @Matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/, {

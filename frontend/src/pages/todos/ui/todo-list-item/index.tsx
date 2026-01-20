@@ -12,10 +12,11 @@ export const TodoListItem = React.forwardRef<
     todo: TodoItem;
     onDelete: () => void;
     onUpdate: (formData: { name: string }) => void;
+    onEdit?: () => void;
     onToggleComplete: () => void;
     className?: string;
   } & React.HTMLAttributes<HTMLLIElement>
->(({ todo, onDelete, onUpdate, onToggleComplete, className, ...props }, ref) => {
+>(({ todo, onDelete, onUpdate, onEdit, onToggleComplete, className, ...props }, ref) => {
   return (
     <li
       ref={ref}
@@ -51,13 +52,17 @@ export const TodoListItem = React.forwardRef<
         <button
           className="w-11 h-11 flex items-center justify-center"
           onClick={() => {
-            overlay.open(({ isOpen, close }) => (
-              <TodoUpdateModal
-                isOpen={isOpen}
-                close={close}
-                onSubmit={(formData: { name: string }) => onUpdate(formData)}
-              />
-            ));
+            if (onEdit) {
+              onEdit();
+            } else {
+              overlay.open(({ isOpen, close }) => (
+                <TodoUpdateModal
+                  isOpen={isOpen}
+                  close={close}
+                  onSubmit={(formData: { name: string }) => onUpdate(formData)}
+                />
+              ));
+            }
           }}
         >
           <PenIcon className="w-4 h-4 text-gray-950" />

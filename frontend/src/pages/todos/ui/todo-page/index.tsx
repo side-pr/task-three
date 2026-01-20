@@ -16,9 +16,12 @@ import { scheduleDelete } from "@pages/todos/api/schedule-delete";
 import { scheduleMoveToTodoList } from "@pages/todos/api/schedule-move-to-todo-list";
 import { scheduleComplete } from "@pages/todos/api/schedule-complete";
 import { scheduleCancelComplete } from "@pages/todos/api/schedule-cancel-complete";
+import { scheduleUpdate } from "@pages/todos/api/schedule-update";
 import { DndProvider } from "@shared/ui";
 import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@pages/todos/ui/schedule-create-modal";
+import { ScheduleUpdateModal } from "@pages/todos/ui/schedule-update-modal";
+import { ScheduleItem } from "@pages/todos/api/schedule-get-list";
 
 type DragData = {
   scheduleId?: number;
@@ -52,6 +55,35 @@ export const TodoPage = () => {
   const { mutateAsync: moveScheduleToTodoList } = useMutation(
     scheduleMoveToTodoListMutationOptions()
   );
+  const { mutateAsync: updateSchedule } = useMutation(
+    scheduleUpdateMutationOptions()
+  );
+
+  const handleScheduleUpdate = (schedule: ScheduleItem) => {
+    overlay.open(({ isOpen, close }) => (
+      <ScheduleUpdateModal
+        isOpen={isOpen}
+        close={close}
+        defaultValues={{
+          name: schedule.taskName,
+          startTime: schedule.startTime.slice(0, 5),
+          endTime: schedule.endTime.slice(0, 5),
+        }}
+        onConfirm={(formData) => {
+          updateSchedule({
+            pathParams: { scheduleId: schedule.scheduleId },
+            formData: {
+              taskId: schedule.taskId,
+              name: formData.name,
+              startTime: formData.startTime + ":00",
+              endTime: formData.endTime + ":00",
+              targetDate: schedule.targetDate,
+            },
+          });
+        }}
+      />
+    ));
+  };
 
   const handleDragEnd = (data: DragData, overId: string | null) => {
     // todo -> must-todo: schedule 생성
@@ -103,6 +135,7 @@ export const TodoPage = () => {
                 <MustTodoSection
                   scheduleItems={scheduleItems}
                   onDelete={(scheduleId) => deleteSchedule({ scheduleId })}
+                  onUpdate={handleScheduleUpdate}
                   onComplete={(scheduleId) => completeSchedule({ scheduleId })}
                   onCancelComplete={(scheduleId) =>
                     cancelCompleteSchedule({ scheduleId })
@@ -224,6 +257,27 @@ const scheduleMoveToTodoListMutationOptions = () => {
     onSuccess: () => {
       getQueryClient().invalidateQueries(scheduleQueries.list());
       getQueryClient().invalidateQueries(todoQueries.list());
+    },
+  });
+};
+
+const scheduleUpdateMutationOptions = () => {
+  return mutationOptions({
+    mutationFn: ({
+      pathParams,
+      formData,
+    }: {
+      pathParams: { scheduleId: number };
+      formData: {
+        taskId: number;
+        name: string;
+        startTime: string;
+        endTime: string;
+        targetDate: string;
+      };
+    }) => scheduleUpdate(pathParams, formData),
+    onSuccess: () => {
+      getQueryClient().invalidateQueries(scheduleQueries.list());
     },
   });
 };
