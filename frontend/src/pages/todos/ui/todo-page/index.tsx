@@ -89,7 +89,7 @@ export const TodoPage = () => {
     // todo -> must-todo: schedule 생성
     if (overId === "must-todo-section" && !data.scheduleId) {
       overlay.open(({ isOpen, close }) => (
-        <ScheduleCreateModal
+          <ScheduleCreateModal
           isOpen={isOpen}
           close={close}
           todoName={data.taskName}
