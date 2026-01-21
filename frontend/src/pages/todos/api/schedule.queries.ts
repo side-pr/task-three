@@ -7,16 +7,20 @@ import { scheduleGetList } from "./schedule-get-list";
 
 export const scheduleQueries = {
   all: () => ["schedules"] as const,
-  list: () =>
+
+
+  lists: () => [...scheduleQueries.all(), "list"] as const,
+  list: (date: string) =>
     queryOptions({
-      queryKey: [...scheduleQueries.all(), "list"] as const,
-      queryFn: () => scheduleGetList(),
+      queryKey: [...scheduleQueries.lists(), date] as const,
+      queryFn: () => scheduleGetList(date),
     }),
+
+  details: () => [...scheduleQueries.all(), "detail"] as const,
   detail: (pathParams: ScheduleGetDetailPathParams) =>
     queryOptions({
       queryKey: [
-        ...scheduleQueries.all(),
-        "detail",
+        ...scheduleQueries.details(),
         pathParams.scheduleId,
       ] as const,
       queryFn: () => scheduleGetDetail(pathParams),

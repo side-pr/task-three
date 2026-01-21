@@ -2,8 +2,10 @@ import { apiRequester, HttpStatus } from "@shared/api";
 import { ApiResponse } from "@shared/api/openapi/helper";
 import { AxiosResponse } from "axios";
 
-export const todoGetList = async () => {
-  const response = await apiRequester.get<TodoGetListResponse>("/api/tasks");
+export const todoGetList = async (date: string) => {
+  const response = await apiRequester.get<TodoGetListResponse>("/api/tasks", {
+    params: { date },
+  });
   return response.data.data;
 };
 

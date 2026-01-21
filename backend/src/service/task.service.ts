@@ -19,28 +19,50 @@ export class TaskService {
     private readonly scheduleRepository: Repository<Schedule>,
   ) {}
 
-  async findAll(): Promise<TaskListResponse> {
+  async findAll(date: string): Promise<TaskListResponse> {
+    const today = new Date().toISOString().split('T')[0];
+    const isToday = date === today;
+
+    if (isToday) {
+      // 오늘이면 기존 로직 (schedule에 없는 task)
+      const tasks = await this.taskRepository.find({
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+
+      const schedules = await this.scheduleRepository.find({
+        relations: ['task'],
+      });
+
+      // schedule에 연결된 task id 목록
+      const scheduledTaskIds = schedules
+        .filter((schedule) => schedule.task !== null)
+        .map((schedule) => schedule.task!.id);
+
+      // schedule에 없는 task만 필터링
+      const filteredTasks = tasks.filter(
+        (task) => !scheduledTaskIds.includes(task.id),
+      );
+
+      const taskItems = filteredTasks.map(
+        (task) => new TaskItemResponse(task.id, task.name, task.isCompleted),
+      );
+
+      return new TaskListResponse(taskItems);
+    }
+
+    // 오늘이 아니면 해당 날짜에 완료된 task만 조회
     const tasks = await this.taskRepository.find({
+      where: {
+        completedAt: date,
+      },
       order: {
         createdAt: 'DESC',
       },
     });
 
-    const schedules = await this.scheduleRepository.find({
-      relations: ['task'],
-    });
-
-    // schedule에 연결된 task id 목록
-    const scheduledTaskIds = schedules
-      .filter((schedule) => schedule.task !== null)
-      .map((schedule) => schedule.task!.id);
-
-    // schedule에 없는 task만 필터링
-    const filteredTasks = tasks.filter(
-      (task) => !scheduledTaskIds.includes(task.id),
-    );
-
-    const taskItems = filteredTasks.map(
+    const taskItems = tasks.map(
       (task) => new TaskItemResponse(task.id, task.name, task.isCompleted),
     );
 
@@ -95,6 +117,7 @@ export class TaskService {
       throw new NotFoundException('할 일을 찾을 수 없습니다.');
     }
     task.isCompleted = true;
+    task.completedAt = new Date().toISOString().split('T')[0];
     await this.taskRepository.save(task);
   }
 
@@ -106,6 +129,7 @@ export class TaskService {
       throw new NotFoundException('할 일을 찾을 수 없습니다.');
     }
     task.isCompleted = false;
+    task.completedAt = null;
     await this.taskRepository.save(task);
   }
 }

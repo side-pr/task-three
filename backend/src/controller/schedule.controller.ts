@@ -7,8 +7,9 @@ import {
   Body,
   Put,
   Get,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ServiceApiResponse } from 'src/config/api-response';
 import { ScheduleCreateRequest } from 'src/dto/schedule-create-request.dto';
 import { ScheduleDetailResponse } from 'src/dto/schedule-detail-response.dto';
@@ -22,13 +23,21 @@ export class ScheduleController {
 
   @Get()
   @ApiOperation({ summary: '스케줄 목록 조회' })
+  @ApiQuery({
+    name: 'date',
+    required: true,
+    description: '조회 날짜 (YYYY-MM-DD)',
+    example: '2026-01-21',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: '스케줄 목록 조회 성공',
     type: ScheduleListResponse,
   })
-  async findAll(): Promise<ServiceApiResponse<ScheduleListResponse>> {
-    const scheduleListResponse = await this.scheduleService.findAll();
+  async findAll(
+    @Query('date') date: string,
+  ): Promise<ServiceApiResponse<ScheduleListResponse>> {
+    const scheduleListResponse = await this.scheduleService.findAll(date);
     return ServiceApiResponse.success(HttpStatus.OK, scheduleListResponse);
   }
 

@@ -1,6 +1,6 @@
-import { Controller, Delete, HttpStatus, Post, Put } from '@nestjs/common';
+import { Controller, Delete, HttpStatus, Post, Put, Query } from '@nestjs/common';
 import { Body, Get, Param } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TaskService } from 'src/service/task.service';
 import { TaskCreateRequest } from 'src/dto/task-create-request.dto';
 import { ServiceApiResponse } from 'src/config/api-response';
@@ -16,13 +16,21 @@ export class TaskController {
 
   @Get()
   @ApiOperation({ summary: '할 일 목록 조회' })
+  @ApiQuery({
+    name: 'date',
+    required: true,
+    description: '조회 날짜 (YYYY-MM-DD)',
+    example: '2026-01-21',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: '할 일 목록 조회 성공',
     type: TaskListResponse,
   })
-  async findAll(): Promise<ServiceApiResponse<TaskListResponse>> {
-    const taskListResponse = await this.taskService.findAll();
+  async findAll(
+    @Query('date') date: string,
+  ): Promise<ServiceApiResponse<TaskListResponse>> {
+    const taskListResponse = await this.taskService.findAll(date);
     return ServiceApiResponse.success(HttpStatus.OK, taskListResponse);
   }
 

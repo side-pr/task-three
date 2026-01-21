@@ -11,6 +11,9 @@ export class Task extends BaseModel {
   @Column({ default: false })
   isCompleted: boolean;
 
+  @Column({ type: 'date', nullable: true })
+  completedAt: string | null;
+
   @ManyToOne(() => Member, (member) => member.id)
   member: Member;
 

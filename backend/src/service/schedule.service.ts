@@ -8,7 +8,7 @@ import {
 } from 'src/dto/schedule-list-response.dto';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Task } from 'src/entities/task.entity';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 
 @Injectable()
 export class ScheduleService {
@@ -19,11 +19,52 @@ export class ScheduleService {
     private readonly taskRepository: Repository<Task>,
   ) {}
 
-  async findAll(): Promise<ScheduleListResponse> {
+  async findAll(date: string): Promise<ScheduleListResponse> {
+    const today = new Date().toISOString().split('T')[0];
+
+    // 지난 날짜의 미완료 Schedule 삭제 (Task는 유지)
+    await this.scheduleRepository.delete({
+      targetDate: LessThan(today),
+      isCompleted: false,
+    });
+
+    const isToday = date === today;
+
+    if (isToday) {
+      // 오늘이면 오늘 Schedule 조회
+      const schedules = await this.scheduleRepository.find({
+        relations: ['task'],
+        where: {
+          targetDate: today,
+        },
+        order: {
+          startTime: 'ASC',
+        },
+      });
+
+      const scheduleItems = schedules.map(
+        (schedule) =>
+          new ScheduleItemResponse(
+            schedule.id,
+            schedule.task?.id || 0,
+            schedule.task?.name || '',
+            schedule.startTime,
+            schedule.endTime,
+            schedule.targetDate,
+            schedule.isCompleted,
+          ),
+      );
+
+      return new ScheduleListResponse(scheduleItems);
+    }
+
+    // 오늘이 아니면 해당 날짜에 완료된 schedule만 조회
     const schedules = await this.scheduleRepository.find({
       relations: ['task'],
+      where: {
+        completedAt: date,
+      },
       order: {
-        targetDate: 'ASC',
         startTime: 'ASC',
       },
     });
@@ -151,6 +192,7 @@ export class ScheduleService {
     }
 
     schedule.isCompleted = true;
+    schedule.completedAt = new Date().toISOString().split('T')[0];
     await this.scheduleRepository.save(schedule);
   }
 
@@ -162,6 +204,7 @@ export class ScheduleService {
       throw new NotFoundException('스케줄을 찾을 수 없습니다.');
     }
     schedule.isCompleted = false;
+    schedule.completedAt = null;
     await this.scheduleRepository.save(schedule);
   }
 

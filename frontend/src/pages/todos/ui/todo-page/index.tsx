@@ -22,6 +22,9 @@ import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@pages/todos/ui/schedule-create-modal";
 import { ScheduleUpdateModal } from "@pages/todos/ui/schedule-update-modal";
 import { ScheduleItem } from "@pages/todos/api/schedule-get-list";
+import { useSearchParams } from "react-router-dom";
+
+const getToday = () => new Date().toISOString().split("T")[0];
 
 type DragData = {
   scheduleId?: number;
@@ -31,32 +34,39 @@ type DragData = {
 };
 
 export const TodoPage = () => {
-  const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions());
-  const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions());
-  const { mutateAsync: deleteTodo } = useMutation(todoDeleteMutationOptions());
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedDate = searchParams.get("date") || getToday();
+
+  const setSelectedDate = (date: string) => {
+    setSearchParams({ date });
+  };
+
+  const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions(selectedDate));
+  const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions(selectedDate));
+  const { mutateAsync: deleteTodo } = useMutation(todoDeleteMutationOptions(selectedDate));
   const { mutateAsync: completeTodo } = useMutation(
-    todoCompleteMutationOptions()
+    todoCompleteMutationOptions(selectedDate)
   );
   const { mutateAsync: cancelCompleteTodo } = useMutation(
-    todoCancelCompleteMutationOptions()
+    todoCancelCompleteMutationOptions(selectedDate)
   );
   const { mutateAsync: createSchedule } = useMutation(
-    scheduleCreateMutationOptions()
+    scheduleCreateMutationOptions(selectedDate)
   );
   const { mutateAsync: deleteSchedule } = useMutation(
-    scheduleDeleteMutationOptions()
+    scheduleDeleteMutationOptions(selectedDate)
   );
   const { mutateAsync: completeSchedule } = useMutation(
-    scheduleCompleteMutationOptions()
+    scheduleCompleteMutationOptions(selectedDate)
   );
   const { mutateAsync: cancelCompleteSchedule } = useMutation(
-    scheduleCancelCompleteMutationOptions()
+    scheduleCancelCompleteMutationOptions(selectedDate)
   );
   const { mutateAsync: moveScheduleToTodoList } = useMutation(
-    scheduleMoveToTodoListMutationOptions()
+    scheduleMoveToTodoListMutationOptions(selectedDate)
   );
   const { mutateAsync: updateSchedule } = useMutation(
-    scheduleUpdateMutationOptions()
+    scheduleUpdateMutationOptions(selectedDate)
   );
 
   const handleScheduleUpdate = (schedule: ScheduleItem) => {
@@ -127,10 +137,13 @@ export const TodoPage = () => {
     >
       <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
         <div className="w-full h-full flex flex-col items-center gap-6  px-6">
-          <DateSelectSection />
+          <DateSelectSection
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+          />
 
           <div className="w-full flex flex-col gap-6">
-            <SuspenseQuery {...scheduleQueries.list()}>
+            <SuspenseQuery {...scheduleQueries.list(selectedDate)}>
               {({ data: scheduleItems }) => (
                 <MustTodoSection
                   scheduleItems={scheduleItems}
@@ -143,8 +156,8 @@ export const TodoPage = () => {
                 />
               )}
             </SuspenseQuery>
-            
-            <SuspenseQuery {...todoQueries.list()}>
+
+            <SuspenseQuery {...todoQueries.list(selectedDate)}>
               {({ data: todoItems }) => (
                 <TodoSection
                   todoItems={todoItems}
@@ -169,99 +182,99 @@ export const TodoPage = () => {
     </DndProvider>
   );
 };
-const todoUpdateMutationOptions = () => {
+const todoUpdateMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: todoUpdate,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(todoQueries.list());
+      getQueryClient().invalidateQueries(todoQueries.list(date));
     },
   });
 };
-const todoCreateMutationOptions = () => {
+const todoCreateMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: todoCreate,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(todoQueries.list());
+      getQueryClient().invalidateQueries(todoQueries.list(date));
     },
   });
 };
 
-const todoDeleteMutationOptions = () => {
+const todoDeleteMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: todoDelete,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(todoQueries.list());
+      getQueryClient().invalidateQueries(todoQueries.list(date));
     },
   });
 };
 
-const todoCompleteMutationOptions = () => {
+const todoCompleteMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: todoComplete,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(todoQueries.list());
+      getQueryClient().invalidateQueries(todoQueries.list(date));
     },
   });
 };
 
-const todoCancelCompleteMutationOptions = () => {
+const todoCancelCompleteMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: todoCancelComplete,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(todoQueries.list());
+      getQueryClient().invalidateQueries(todoQueries.list(date));
     },
   });
 };
 
-const scheduleCreateMutationOptions = () => {
+const scheduleCreateMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: scheduleCreate,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(scheduleQueries.list());
-      getQueryClient().invalidateQueries(todoQueries.list());
+      getQueryClient().invalidateQueries(scheduleQueries.list(date));
+      getQueryClient().invalidateQueries(todoQueries.list(date));
     },
   });
 };
 
-const scheduleDeleteMutationOptions = () => {
+const scheduleDeleteMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: scheduleDelete,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(scheduleQueries.list());
-      getQueryClient().invalidateQueries(todoQueries.list());
+      getQueryClient().invalidateQueries(scheduleQueries.list(date));
+      getQueryClient().invalidateQueries(todoQueries.list(date));
     },
   });
 };
 
-const scheduleCompleteMutationOptions = () => {
+const scheduleCompleteMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: scheduleComplete,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(scheduleQueries.list());
+      getQueryClient().invalidateQueries(scheduleQueries.list(date));
     },
   });
 };
 
-const scheduleCancelCompleteMutationOptions = () => {
+const scheduleCancelCompleteMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: scheduleCancelComplete,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(scheduleQueries.list());
+      getQueryClient().invalidateQueries(scheduleQueries.list(date));
     },
   });
 };
 
-const scheduleMoveToTodoListMutationOptions = () => {
+const scheduleMoveToTodoListMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: scheduleMoveToTodoList,
     onSuccess: () => {
-      getQueryClient().invalidateQueries(scheduleQueries.list());
-      getQueryClient().invalidateQueries(todoQueries.list());
+      getQueryClient().invalidateQueries(scheduleQueries.list(date));
+      getQueryClient().invalidateQueries(todoQueries.list(date));
     },
   });
 };
 
-const scheduleUpdateMutationOptions = () => {
+const scheduleUpdateMutationOptions = (date: string) => {
   return mutationOptions({
     mutationFn: ({
       pathParams,
@@ -277,7 +290,7 @@ const scheduleUpdateMutationOptions = () => {
       };
     }) => scheduleUpdate(pathParams, formData),
     onSuccess: () => {
-      getQueryClient().invalidateQueries(scheduleQueries.list());
+      getQueryClient().invalidateQueries(scheduleQueries.list(date));
     },
   });
 };

@@ -295,6 +295,11 @@ export interface components {
             /** @description 할 일 ID */
             taskId: number;
             /**
+             * @description 할 일 이름
+             * @example 프로젝트 회의
+             */
+            name?: string;
+            /**
              * @description 스케줄 시작 시간
              * @example 08:00:00
              */
@@ -321,7 +326,10 @@ export type $defs = Record<string, never>;
 export interface operations {
     TaskController_findAll: {
         parameters: {
-            query?: never;
+            query: {
+                /** @description 조회 날짜 (YYYY-MM-DD) */
+                date: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -471,7 +479,10 @@ export interface operations {
     };
     ScheduleController_findAll: {
         parameters: {
-            query?: never;
+            query: {
+                /** @description 조회 날짜 (YYYY-MM-DD) */
+                date: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
