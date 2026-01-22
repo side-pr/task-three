@@ -1,3 +1,5 @@
+'use client';
+
 import { getQueryClient } from "@app/providers/get-query-client";
 import { todoCreate } from "@pages/todos/api/todo-create";
 import { todoDelete } from "@pages/todos/api/todo-delete";
@@ -22,7 +24,7 @@ import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@pages/todos/ui/schedule-create-modal";
 import { ScheduleUpdateModal } from "@pages/todos/ui/schedule-update-modal";
 import { ScheduleItem } from "@pages/todos/api/schedule-get-list";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const getToday = () => new Date().toISOString().split("T")[0];
 
@@ -34,11 +36,12 @@ type DragData = {
 };
 
 export const TodoPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const selectedDate = searchParams.get("date") || getToday();
 
   const setSelectedDate = (date: string) => {
-    setSearchParams({ date });
+    router.push(`?date=${date}`);
   };
 
   const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions(selectedDate));

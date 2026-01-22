@@ -1,3 +1,5 @@
+'use client';
+
 import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { TodoDeleteModal } from "@pages/todos/ui/todo-delete-modal";
 import { TodoUpdateModal } from "@pages/todos/ui/todo-update-modal";

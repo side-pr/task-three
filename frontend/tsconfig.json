@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -12,22 +16,44 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "types": ["vite/client"],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
-      "@app/*": ["./src/app/*"],
-      "@entities/*": ["./src/entities/*"],
-      "@features/*": ["./src/features/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@shared/*": ["./src/shared/*"],
-      "@widgets/*": ["./src/widgets/*"],
-      "@/*": ["./src/*"]
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@entities/*": [
+        "./src/entities/*"
+      ],
+      "@features/*": [
+        "./src/features/*"
+      ],
+      "@pages/*": [
+        "./src/views/*"
+      ],
+      "@shared/*": [
+        "./src/shared/*"
+      ],
+      "@widgets/*": [
+        "./src/widgets/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
     },
     "target": "ES2017"
   },
   "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/vite-env.d.ts"
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -1,1 +1,1 @@
-export { ReactQueryProvider } from "./react-query-provider";
+export { getQueryClient } from "./get-query-client";

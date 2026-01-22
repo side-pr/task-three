@@ -1,3 +1,5 @@
+'use client';
+
 import { TodoItem } from "@pages/todos/api/todo-get-list";
 import { TodoCreateModal } from "@pages/todos/ui/todo-create-modal";
 import { Draggable } from "@shared/ui/draggable";

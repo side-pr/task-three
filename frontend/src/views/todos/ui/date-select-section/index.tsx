@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from "@shared/lib/style";
 import { useMemo } from "react";
 
