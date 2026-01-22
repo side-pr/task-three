@@ -1,9 +1,9 @@
-import { API_SERVER_URL } from "./config";
+import { INTERNAL_API_SERVER_URL } from "@shared/api/config";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 const TIMEOUT = 10000;
 export const apiRequester: AxiosInstance = axios.create({
-  baseURL: API_SERVER_URL,
+  baseURL: INTERNAL_API_SERVER_URL,
   timeout: TIMEOUT,
 });
 
