@@ -1,5 +1,6 @@
-import { TodoPageWrapper } from '@/pages/todos/ui/todo-page-wrapper';
+import { TodoPage } from '@pages/todos';
 
-export default function Page() {
-  return <TodoPageWrapper />;
+export default async function Page({params}: {params: Promise<{date: string}>}) {
+  const { date } = await params;
+  return <TodoPage date={date} />;
 }

@@ -8,21 +8,3 @@ export const apiRequester: AxiosInstance = axios.create({
 });
 
 apiRequester.interceptors.response.use((response: AxiosResponse) => response);
-
-// apiRequester.interceptors.request.use(
-//   async (config) => {
-//     const accessToken = getAccessToken();
-//     if (accessToken) {
-//       config.headers["Authorization"] = `Bearer ${accessToken}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     throw error;
-//   }
-// );
-
-// const getAccessToken = (): string | null => {
-//   if (typeof window === "undefined") return null;
-//   return localStorage.getItem(ACCESS_TOKEN);
-// };

@@ -24,7 +24,7 @@ import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@/pages/todos/ui/schedule-create-modal";
 import { ScheduleUpdateModal } from "@/pages/todos/ui/schedule-update-modal";
 import { ScheduleItem } from "@/pages/todos/api/schedule-get-list";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const getToday = () => new Date().toISOString().split("T")[0];
 
@@ -35,15 +35,9 @@ type DragData = {
   isCompleted: boolean;
 };
 
-export const TodoPage = () => {
-  const searchParams = useSearchParams();
+export const TodoPage = ({date}: {date: string}) => {
+  const selectedDate = date ?? getToday();
   const router = useRouter();
-  const selectedDate = searchParams.get("date") || getToday();
-
-  const setSelectedDate = (date: string) => {
-    router.push(`?date=${date}`);
-  };
-
   const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions(selectedDate));
   const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions(selectedDate));
   const { mutateAsync: deleteTodo } = useMutation(todoDeleteMutationOptions(selectedDate));
@@ -142,7 +136,9 @@ export const TodoPage = () => {
         <div className="w-full h-full flex flex-col items-center gap-6  px-6">
           <DateSelectSection
             selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
+            onDateChange={(date) => {
+              router.push(`?date=${date}`);
+            }}
           />
 
           <div className="w-full flex flex-col gap-6">
