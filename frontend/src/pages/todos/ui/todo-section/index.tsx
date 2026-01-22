@@ -1,10 +1,10 @@
 'use client';
 
-import { TodoItem } from "@pages/todos/api/todo-get-list";
-import { TodoCreateModal } from "@pages/todos/ui/todo-create-modal";
+import { TodoItem } from "@/pages/todos/api/todo-get-list";
+import { TodoCreateModal } from "@/pages/todos/ui/todo-create-modal";
 import { Draggable } from "@shared/ui/draggable";
 import { Droppable } from "@shared/ui";
-import { TodoListItem } from "@pages/todos/ui/todo-list-item";
+import { TodoListItem } from "@/pages/todos/ui/todo-list-item";
 import { PlusIcon } from "@shared/ui/icons";
 import { overlay } from "overlay-kit";
 

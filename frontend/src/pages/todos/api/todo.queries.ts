@@ -1,4 +1,4 @@
-import { todoGetList } from "@pages/todos/api/todo-get-list";
+import { todoGetList } from "@/pages/todos/api/todo-get-list";
 import { queryOptions } from "@tanstack/react-query";
 
 export const todoQueries = {

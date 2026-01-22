@@ -32,7 +32,7 @@
         "./src/features/*"
       ],
       "@pages/*": [
-        "./src/views/*"
+        "./src/pages/*"
       ],
       "@shared/*": [
         "./src/shared/*"
@@ -52,7 +52,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     ".next/dev/types/**/*.ts"
-  ],
+, "app/layout.tsx", "app/page.tsx"  ],
   "exclude": [
     "node_modules"
   ]

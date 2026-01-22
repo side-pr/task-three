@@ -1,8 +1,8 @@
 'use client';
 
-import { TodoItem } from "@pages/todos/api/todo-get-list";
-import { TodoDeleteModal } from "@pages/todos/ui/todo-delete-modal";
-import { TodoUpdateModal } from "@pages/todos/ui/todo-update-modal";
+import { TodoItem } from "@/pages/todos/api/todo-get-list";
+import { TodoDeleteModal } from "@/pages/todos/ui/todo-delete-modal";
+import { TodoUpdateModal } from "@/pages/todos/ui/todo-update-modal";
 import { cn } from "@shared/lib/style";
 import { CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
 import { overlay } from "overlay-kit";

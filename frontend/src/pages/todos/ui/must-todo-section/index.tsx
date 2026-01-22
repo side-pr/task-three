@@ -1,7 +1,7 @@
 'use client';
 
-import { ScheduleItem } from "@pages/todos/api/schedule-get-list";
-import { TodoListItem } from "@pages/todos/ui/todo-list-item";
+import { ScheduleItem } from "@/pages/todos/api/schedule-get-list";
+import { TodoListItem } from "@/pages/todos/ui/todo-list-item";
 import { cn } from "@shared/lib/style";
 import { Badge, Droppable } from "@shared/ui";
 import { Draggable } from "@shared/ui/draggable";
