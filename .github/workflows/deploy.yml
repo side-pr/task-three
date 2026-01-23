@@ -19,7 +19,7 @@ jobs:
 
       - name: 의존성(라이브러리) 설치
         working-directory: backend
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: .env 파일 만들기
         working-directory: backend
@@ -60,6 +60,6 @@ jobs:
             mv /home/ubuntu/task-three-server/tobe/project.tar.gz /home/ubuntu/task-three-server/current/project.tar.gz
             cd /home/ubuntu/task-three-server/current
             tar -xvf project.tar.gz
-            yarn install --frozen-lockfile
+            yarn install
             pm2 kill
             pm2 start dist/main.js --name "backend-server"
