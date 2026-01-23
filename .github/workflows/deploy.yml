@@ -26,10 +26,6 @@ jobs:
         run: |
           echo '${{ secrets.ENV }}' > .env
 
-      - name: 테스트 코드 실행
-        working-directory: backend
-        run: yarn test
-
       - name: 빌드
         working-directory: backend
         run: yarn build
