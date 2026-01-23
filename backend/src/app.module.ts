@@ -28,6 +28,7 @@ import { Schedule } from './entities/schedule.entity';
         synchronize: configService.get('TYPEORM_SYNCHRONIZE') === 'true',
         logging: configService.get('TYPEORM_LOGGING') === 'true',
         namingStrategy: new SnakeNamingStrategy(),
+        ssl: configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
       }),
       inject: [ConfigService],
     }),
