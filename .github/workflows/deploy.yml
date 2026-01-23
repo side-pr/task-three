@@ -52,8 +52,8 @@ jobs:
           script_stop: true
           script: |
             rm -rf /home/ubuntu/task-three-server/current
-            mkdir /home/ubuntu/task-three-server/current
-            mv /home/ubuntu/task-three-server/tobe/project.tar.gz /home/ubuntu/task-three-server/current/project.tar.gz
+            mkdir -p /home/ubuntu/task-three-server/current
+            mv /home/ubuntu/task-three-server/tobe/backend/project.tar.gz /home/ubuntu/task-three-server/current/project.tar.gz
             cd /home/ubuntu/task-three-server/current
             tar -xvf project.tar.gz
             yarn install
