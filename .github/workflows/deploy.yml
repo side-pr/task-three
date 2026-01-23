@@ -1,0 +1,65 @@
+name: Deploy To EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github Repository 파일 불러오기
+        uses: actions/checkout@v4
+
+      - name: Node 설치
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 의존성(라이브러리) 설치
+        working-directory: backend
+        run: yarn install --frozen-lockfile
+
+      - name: .env 파일 만들기
+        working-directory: backend
+        run: |
+          echo '${{ secrets.ENV }}' > .env
+
+      - name: 테스트 코드 실행
+        working-directory: backend
+        run: yarn test
+
+      - name: 빌드
+        working-directory: backend
+        run: yarn build
+
+      - name: 압축하기
+        working-directory: backend
+        run: tar -czvf project.tar.gz dist .env package.json yarn.lock
+
+      - name: SCP로 EC2에 빌드된 파일 전송하기
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: backend/project.tar.gz
+          target: /home/ubuntu/task-three-server/tobe
+
+      - name: SSH로 EC2에 접속하기
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            rm -rf /home/ubuntu/task-three-server/current
+            mkdir /home/ubuntu/task-three-server/current
+            mv /home/ubuntu/task-three-server/tobe/project.tar.gz /home/ubuntu/task-three-server/current/project.tar.gz
+            cd /home/ubuntu/task-three-server/current
+            tar -xvf project.tar.gz
+            yarn install --frozen-lockfile
+            pm2 kill
+            pm2 start dist/main.js --name "backend-server"
