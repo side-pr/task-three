@@ -55,7 +55,10 @@ export class TaskController {
     @Body() taskCreateRequestDto: TaskCreateRequest,
     @Req() req: Request,
   ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    const taskId = await this.taskService.create(taskCreateRequestDto, req.member);
+    const taskId = await this.taskService.create(
+      taskCreateRequestDto,
+      req.member,
+    );
     return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
   }
 
@@ -70,7 +73,10 @@ export class TaskController {
     @Param('taskId') taskId: number,
     @Req() req: Request,
   ): Promise<ServiceApiResponse<TaskDetailResponse>> {
-    const taskDetailResponse = await this.taskService.getDetail(taskId, req.member);
+    const taskDetailResponse = await this.taskService.getDetail(
+      taskId,
+      req.member,
+    );
     return ServiceApiResponse.success(HttpStatus.OK, taskDetailResponse);
   }
 
@@ -85,7 +91,11 @@ export class TaskController {
     @Body() taskUpdateRequestDto: TaskUpdateRequest,
     @Req() req: Request,
   ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    await this.taskService.updateContent(taskId, taskUpdateRequestDto, req.member);
+    await this.taskService.updateContent(
+      taskId,
+      taskUpdateRequestDto,
+      req.member,
+    );
     return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
   }
 
