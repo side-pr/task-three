@@ -8,6 +8,7 @@ import {
   Put,
   Get,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ServiceApiResponse } from 'src/config/api-response';
@@ -15,6 +16,7 @@ import { ScheduleCreateRequest } from 'src/dto/schedule-create-request.dto';
 import { ScheduleDetailResponse } from 'src/dto/schedule-detail-response.dto';
 import { ScheduleListResponse } from 'src/dto/schedule-list-response.dto';
 import { ScheduleService } from 'src/service/schedule.service';
+import type { Request } from 'express';
 
 @ApiTags('api/schedules')
 @Controller('api/schedules')
@@ -36,8 +38,12 @@ export class ScheduleController {
   })
   async findAll(
     @Query('date') date: string,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<ScheduleListResponse>> {
-    const scheduleListResponse = await this.scheduleService.findAll(date);
+    const scheduleListResponse = await this.scheduleService.findAll(
+      date,
+      req.member,
+    );
     return ServiceApiResponse.success(HttpStatus.OK, scheduleListResponse);
   }
 
@@ -65,8 +71,12 @@ export class ScheduleController {
   })
   async createSchedule(
     @Body() scheduleCreateRequest: ScheduleCreateRequest,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<{ scheduleId: number }>> {
-    const scheduleId = await this.scheduleService.create(scheduleCreateRequest);
+    const scheduleId = await this.scheduleService.create(
+      scheduleCreateRequest,
+      req.member,
+    );
     return ServiceApiResponse.success(HttpStatus.CREATED, { scheduleId });
   }
 

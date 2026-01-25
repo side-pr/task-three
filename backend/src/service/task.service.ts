@@ -6,6 +6,7 @@ import {
   TaskItemResponse,
   TaskListResponse,
 } from 'src/dto/task-list-response.dto';
+import { Member } from 'src/entities/member.entity';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Task } from 'src/entities/task.entity';
 import { Repository } from 'typeorm';
@@ -19,13 +20,14 @@ export class TaskService {
     private readonly scheduleRepository: Repository<Schedule>,
   ) {}
 
-  async findAll(date: string): Promise<TaskListResponse> {
+  async findAll(date: string, member?: Member): Promise<TaskListResponse> {
     const today = new Date().toISOString().split('T')[0];
     const isToday = date === today;
 
     if (isToday) {
       // 오늘이면 기존 로직 (schedule에 없는 task)
       const tasks = await this.taskRepository.find({
+        where: member ? { member: { id: member.id } } : {},
         order: {
           createdAt: 'DESC',
         },
@@ -33,6 +35,7 @@ export class TaskService {
 
       const schedules = await this.scheduleRepository.find({
         relations: ['task'],
+        where: member ? { member: { id: member.id } } : {},
       });
 
       // schedule에 연결된 task id 목록
@@ -56,6 +59,7 @@ export class TaskService {
     const tasks = await this.taskRepository.find({
       where: {
         completedAt: date,
+        ...(member ? { member: { id: member.id } } : {}),
       },
       order: {
         createdAt: 'DESC',
@@ -69,8 +73,11 @@ export class TaskService {
     return new TaskListResponse(taskItems);
   }
 
-  async create(taskCreateRequestDto: TaskCreateRequest) {
-    const task = this.taskRepository.create(taskCreateRequestDto);
+  async create(taskCreateRequestDto: TaskCreateRequest, member?: Member) {
+    const task = this.taskRepository.create({
+      ...taskCreateRequestDto,
+      member: member || null,
+    });
     const savedTask = await this.taskRepository.save(task);
     return savedTask.id;
   }

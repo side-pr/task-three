@@ -1,6 +1,7 @@
 import { BaseModel } from 'src/entities/base-model.entity';
+import { Member } from 'src/entities/member.entity';
 import { Task } from 'src/entities/task.entity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 @Entity()
 export class Schedule extends BaseModel {
@@ -22,4 +23,7 @@ export class Schedule extends BaseModel {
   @OneToOne(() => Task, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'task_id' })
   task: Task | null;
+
+  @ManyToOne(() => Member, (member) => member.id, { nullable: true })
+  member: Member | null;
 }

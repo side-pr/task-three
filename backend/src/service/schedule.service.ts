@@ -6,6 +6,7 @@ import {
   ScheduleItemResponse,
   ScheduleListResponse,
 } from 'src/dto/schedule-list-response.dto';
+import { Member } from 'src/entities/member.entity';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Task } from 'src/entities/task.entity';
 import { LessThan, Repository } from 'typeorm';
@@ -19,7 +20,7 @@ export class ScheduleService {
     private readonly taskRepository: Repository<Task>,
   ) {}
 
-  async findAll(date: string): Promise<ScheduleListResponse> {
+  async findAll(date: string, member?: Member): Promise<ScheduleListResponse> {
     const today = new Date().toISOString().split('T')[0];
 
     // 지난 날짜의 미완료 Schedule 삭제 (Task는 유지)
@@ -36,6 +37,7 @@ export class ScheduleService {
         relations: ['task'],
         where: {
           targetDate: today,
+          ...(member ? { member: { id: member.id } } : {}),
         },
         order: {
           startTime: 'ASC',
@@ -63,6 +65,7 @@ export class ScheduleService {
       relations: ['task'],
       where: {
         completedAt: date,
+        ...(member ? { member: { id: member.id } } : {}),
       },
       order: {
         startTime: 'ASC',
@@ -85,7 +88,10 @@ export class ScheduleService {
     return new ScheduleListResponse(scheduleItems);
   }
 
-  async create(scheduleCreateRequest: ScheduleCreateRequest): Promise<number> {
+  async create(
+    scheduleCreateRequest: ScheduleCreateRequest,
+    member?: Member,
+  ): Promise<number> {
     const { taskId, ...scheduleData } = scheduleCreateRequest;
 
     // taskId로 Task 조회
@@ -101,6 +107,7 @@ export class ScheduleService {
     const schedule = this.scheduleRepository.create({
       ...scheduleData,
       task,
+      member: member || null,
     });
 
     const savedSchedule = await this.scheduleRepository.save(schedule);

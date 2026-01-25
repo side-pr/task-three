@@ -1,4 +1,12 @@
-import { Controller, Delete, HttpStatus, Post, Put, Query } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  HttpStatus,
+  Post,
+  Put,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { Body, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TaskService } from 'src/service/task.service';
@@ -8,6 +16,7 @@ import { TaskDetailResponse } from 'src/dto/task-detail-response.dto';
 import { TaskUpdateRequest } from 'src/dto/task-update-request.dto';
 import { TaskCreateResponse } from 'src/dto/task-create-response.dto';
 import { TaskListResponse } from 'src/dto/task-list-response.dto';
+import type { Request } from 'express';
 
 @Controller('api/tasks')
 @ApiTags('api/tasks')
@@ -29,8 +38,9 @@ export class TaskController {
   })
   async findAll(
     @Query('date') date: string,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<TaskListResponse>> {
-    const taskListResponse = await this.taskService.findAll(date);
+    const taskListResponse = await this.taskService.findAll(date, req.member);
     return ServiceApiResponse.success(HttpStatus.OK, taskListResponse);
   }
 
@@ -43,8 +53,9 @@ export class TaskController {
   })
   async create(
     @Body() taskCreateRequestDto: TaskCreateRequest,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    const taskId = await this.taskService.create(taskCreateRequestDto);
+    const taskId = await this.taskService.create(taskCreateRequestDto, req.member);
     return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
   }
 

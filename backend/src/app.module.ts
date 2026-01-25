@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskController } from './controller/task.controller';
@@ -8,6 +8,9 @@ import { TaskService } from './service/task.service';
 import { Task } from './entities/task.entity';
 import { ScheduleService } from 'src/service/schedule.service';
 import { Schedule } from './entities/schedule.entity';
+import { Member } from './entities/member.entity';
+import { MemberService } from './service/member.service';
+import { VisitorMiddleware } from './middleware/visitor.middleware';
 
 @Module({
   imports: [
@@ -35,9 +38,13 @@ import { Schedule } from './entities/schedule.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Task, Schedule]),
+    TypeOrmModule.forFeature([Task, Schedule, Member]),
   ],
   controllers: [TaskController, ScheduleController],
-  providers: [TaskService, ScheduleService],
+  providers: [TaskService, ScheduleService, MemberService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(VisitorMiddleware).forRoutes('*');
+  }
+}

@@ -14,8 +14,8 @@ export class Task extends BaseModel {
   @Column({ type: 'date', nullable: true })
   completedAt: string | null;
 
-  @ManyToOne(() => Member, (member) => member.id)
-  member: Member;
+  @ManyToOne(() => Member, (member) => member.id, { nullable: true })
+  member: Member | null;
 
   @OneToOne(() => Schedule, (schedule) => schedule.task)
   schedule: Schedule | null;
