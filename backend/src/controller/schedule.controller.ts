@@ -47,18 +47,19 @@ export class ScheduleController {
     return ServiceApiResponse.success(HttpStatus.OK, scheduleListResponse);
   }
 
-  @Get(':taskId')
-  @ApiOperation({ summary: '할 일 상세 조회' })
+  @Get(':scheduleId')
+  @ApiOperation({ summary: '스케줄 상세 조회' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: '할 일 상세 조회 성공',
+    description: '스케줄 상세 조회 성공',
     type: ServiceApiResponse<ScheduleDetailResponse>,
   })
   async getDetail(
     @Param('scheduleId') scheduleId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<ScheduleDetailResponse>> {
     const scheduleDetailResponse =
-      await this.scheduleService.getDetail(scheduleId);
+      await this.scheduleService.getDetail(scheduleId, req.member);
     return ServiceApiResponse.success(HttpStatus.OK, scheduleDetailResponse);
   }
 
@@ -90,8 +91,9 @@ export class ScheduleController {
   async updateSchedule(
     @Param('scheduleId') scheduleId: number,
     @Body() scheduleCreateRequest: ScheduleCreateRequest,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<{ scheduleId: number }>> {
-    await this.scheduleService.update(scheduleId, scheduleCreateRequest);
+    await this.scheduleService.update(scheduleId, scheduleCreateRequest, req.member);
     return ServiceApiResponse.success(HttpStatus.CREATED, { scheduleId });
   }
 
@@ -103,8 +105,9 @@ export class ScheduleController {
   })
   async completeSchedule(
     @Param('scheduleId') scheduleId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<{ scheduleId: number }>> {
-    await this.scheduleService.complete(scheduleId);
+    await this.scheduleService.complete(scheduleId, req.member);
     return ServiceApiResponse.success(HttpStatus.OK);
   }
 
@@ -116,8 +119,9 @@ export class ScheduleController {
   })
   async cancelComplete(
     @Param('scheduleId') scheduleId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<void>> {
-    await this.scheduleService.cancelComplete(scheduleId);
+    await this.scheduleService.cancelComplete(scheduleId, req.member);
     return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
   }
 
@@ -129,8 +133,9 @@ export class ScheduleController {
   })
   async moveToScheduleList(
     @Param('scheduleId') scheduleId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<void>> {
-    await this.scheduleService.moveToTodoList(scheduleId);
+    await this.scheduleService.moveToTodoList(scheduleId, req.member);
     return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
   }
 
@@ -140,10 +145,11 @@ export class ScheduleController {
     status: HttpStatus.NO_CONTENT,
     description: '스케줄 삭제',
   })
-  async moveToTodoList(
+  async deleteSchedule(
     @Param('scheduleId') scheduleId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<void>> {
-    await this.scheduleService.delete(scheduleId);
+    await this.scheduleService.delete(scheduleId, req.member);
     return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
   }
 }

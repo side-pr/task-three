@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScheduleCreateRequest } from 'src/dto/schedule-create-request.dto';
 import { ScheduleDetailResponse } from 'src/dto/schedule-detail-response.dto';
@@ -117,13 +117,19 @@ export class ScheduleService {
   async update(
     scheduleId: number,
     scheduleCreateRequest: ScheduleCreateRequest,
+    member?: Member,
   ): Promise<void> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id: scheduleId },
+      relations: ['member'],
     });
 
     if (!schedule) {
       throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
+    }
+
+    if (member && schedule.member?.id !== member.id) {
+      throw new ForbiddenException('해당 스케줄을 수정할 권한이 없습니다.');
     }
 
     const { taskId, name, ...scheduleData } = scheduleCreateRequest;
@@ -152,13 +158,16 @@ export class ScheduleService {
     await this.scheduleRepository.save(schedule);
   }
 
-  async getDetail(scheduleId: number): Promise<ScheduleDetailResponse> {
+  async getDetail(scheduleId: number, member?: Member): Promise<ScheduleDetailResponse> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id: scheduleId },
+      relations: ['member', 'task'],
     });
-    //상세조회부터
     if (!schedule) {
       throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
+    }
+    if (member && schedule.member?.id !== member.id) {
+      throw new ForbiddenException('해당 스케줄을 조회할 권한이 없습니다.');
     }
     const task = await this.taskRepository.findOne({
       where: { id: schedule.task?.id },
@@ -178,24 +187,34 @@ export class ScheduleService {
     );
   }
 
-  async moveToTodoList(scheduleId: number): Promise<void> {
+  async moveToTodoList(scheduleId: number, member?: Member): Promise<void> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id: scheduleId },
+      relations: ['member'],
     });
 
     if (!schedule) {
       throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
     }
 
+    if (member && schedule.member?.id !== member.id) {
+      throw new ForbiddenException('해당 스케줄을 이동할 권한이 없습니다.');
+    }
+
     await this.scheduleRepository.remove(schedule);
   }
-  async complete(scheduleId: number): Promise<void> {
+  async complete(scheduleId: number, member?: Member): Promise<void> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id: scheduleId },
+      relations: ['member'],
     });
 
     if (!schedule) {
       throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
+    }
+
+    if (member && schedule.member?.id !== member.id) {
+      throw new ForbiddenException('해당 스케줄을 완료할 권한이 없습니다.');
     }
 
     schedule.isCompleted = true;
@@ -203,24 +222,32 @@ export class ScheduleService {
     await this.scheduleRepository.save(schedule);
   }
 
-  async cancelComplete(scheduleId: number): Promise<void> {
+  async cancelComplete(scheduleId: number, member?: Member): Promise<void> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id: scheduleId },
+      relations: ['member'],
     });
     if (!schedule) {
       throw new NotFoundException('스케줄을 찾을 수 없습니다.');
+    }
+    if (member && schedule.member?.id !== member.id) {
+      throw new ForbiddenException('해당 스케줄의 완료를 취소할 권한이 없습니다.');
     }
     schedule.isCompleted = false;
     schedule.completedAt = null;
     await this.scheduleRepository.save(schedule);
   }
 
-  async delete(scheduleId: number): Promise<void> {
+  async delete(scheduleId: number, member?: Member): Promise<void> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id: scheduleId },
+      relations: ['member', 'task'],
     });
     if (!schedule) {
       throw new NotFoundException('스케줄을 찾을 수 없습니다.');
+    }
+    if (member && schedule.member?.id !== member.id) {
+      throw new ForbiddenException('해당 스케줄을 삭제할 권한이 없습니다.');
     }
     const task = await this.taskRepository.findOne({
       where: { id: schedule.task?.id },

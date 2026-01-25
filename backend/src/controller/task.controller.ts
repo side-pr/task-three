@@ -68,8 +68,9 @@ export class TaskController {
   })
   async getDetail(
     @Param('taskId') taskId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<TaskDetailResponse>> {
-    const taskDetailResponse = await this.taskService.getDetail(taskId);
+    const taskDetailResponse = await this.taskService.getDetail(taskId, req.member);
     return ServiceApiResponse.success(HttpStatus.OK, taskDetailResponse);
   }
 
@@ -82,8 +83,9 @@ export class TaskController {
   async updateContent(
     @Param('taskId') taskId: number,
     @Body() taskUpdateRequestDto: TaskUpdateRequest,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    await this.taskService.updateContent(taskId, taskUpdateRequestDto);
+    await this.taskService.updateContent(taskId, taskUpdateRequestDto, req.member);
     return ServiceApiResponse.success(HttpStatus.CREATED, { taskId });
   }
 
@@ -95,8 +97,9 @@ export class TaskController {
   })
   async complete(
     @Param('taskId') taskId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    await this.taskService.complete(taskId);
+    await this.taskService.complete(taskId, req.member);
     return ServiceApiResponse.success(HttpStatus.OK);
   }
 
@@ -108,8 +111,9 @@ export class TaskController {
   })
   async cancelComplete(
     @Param('taskId') taskId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<{ taskId: number }>> {
-    await this.taskService.cancelComplete(taskId);
+    await this.taskService.cancelComplete(taskId, req.member);
     return ServiceApiResponse.success(HttpStatus.OK);
   }
 
@@ -121,8 +125,9 @@ export class TaskController {
   })
   async delete(
     @Param('taskId') taskId: number,
+    @Req() req: Request,
   ): Promise<ServiceApiResponse<void>> {
-    await this.taskService.delete(taskId);
+    await this.taskService.delete(taskId, req.member);
     return ServiceApiResponse.success(HttpStatus.NO_CONTENT, null);
   }
 }

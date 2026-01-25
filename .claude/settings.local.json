@@ -22,7 +22,9 @@
       "Bash(npm install:*)",
       "mcp__ide__getDiagnostics",
       "Bash(npm run start:dev:*)",
-      "Bash(yarn build)"
+      "Bash(yarn build)",
+      "Bash(find:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
