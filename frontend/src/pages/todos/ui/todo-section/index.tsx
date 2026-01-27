@@ -68,7 +68,7 @@ export const TodoSection = ({
                     ref={ref}
                     {...listeners}
                     {...attributes}
-                    className={`cursor-move ${isDragging ? "opacity-50" : ""}`}
+                    className={`cursor-move touch-none ${isDragging ? "opacity-50" : ""}`}
                     todo={todo}
                     onDelete={() => onDelete(todo.taskId)}
                     onUpdate={(formData: { name: string }) =>

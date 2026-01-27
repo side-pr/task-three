@@ -60,6 +60,7 @@ export class TaskService {
     }
 
     // 오늘이 아니면 해당 날짜에 완료된 task만 조회
+    console.log('member', member);
     const tasks = await this.taskRepository.find({
       where: {
         completedAt: date,
@@ -69,7 +70,7 @@ export class TaskService {
         createdAt: 'DESC',
       },
     });
-
+    console.log('tasks', tasks);
     const taskItems = tasks.map(
       (task) => new TaskItemResponse(task.id, task.name, task.isCompleted),
     );

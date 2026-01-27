@@ -68,7 +68,7 @@ export const MustTodoSection = ({
                       ref={ref}
                       {...listeners}
                       {...attributes}
-                      className={`cursor-move ${isDragging ? "opacity-50" : ""}`}
+                      className={`cursor-move touch-none ${isDragging ? "opacity-50" : ""}`}
                       todo={{
                         taskId: schedule.taskId,
                         name: schedule.taskName,
