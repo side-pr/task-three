@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { TodoItem } from "@/pages/todos/api/todo-get-list";
 import { TodoCreateModal } from "@/pages/todos/ui/todo-create-modal";
@@ -28,7 +28,12 @@ export const TodoSection = ({
   return (
     <Droppable id="todo-section">
       {({ ref, isOver }) => (
-        <section ref={ref} className={`flex flex-col gap-3 ${isOver ? "ring-2 ring-blue-500 rounded-2xl" : ""}`}>
+        <section
+          ref={ref}
+          className={`flex flex-col gap-3 ${
+            isOver ? "ring-2 ring-blue-500 rounded-2xl" : ""
+          }`}
+        >
           <header className="flex items-start justify-between">
             <div className="flex flex-col gap-1">
               <h2 className="text-title2 font-semibold text-gray-950">
@@ -61,15 +66,22 @@ export const TodoSection = ({
               <Draggable
                 key={todo.taskId}
                 id={`todo-${todo.taskId}`}
-                data={{ taskId: todo.taskId, taskName: todo.name, isCompleted: todo.isCompleted }}
+                data={{
+                  taskId: todo.taskId,
+                  taskName: todo.name,
+                  isCompleted: todo.isCompleted,
+                }}
               >
                 {({ ref, listeners, attributes, isDragging }) => (
                   <TodoListItem
                     ref={ref}
                     {...listeners}
                     {...attributes}
-                    className={`cursor-move touch-none ${isDragging ? "opacity-50" : ""}`}
+                    className={`cursor-move touch-none ${
+                      isDragging ? "opacity-50" : ""
+                    }`}
                     todo={todo}
+                    isMust={false}
                     onDelete={() => onDelete(todo.taskId)}
                     onUpdate={(formData: { name: string }) =>
                       onUpdate(todo.taskId, formData)
@@ -107,7 +119,9 @@ export const TodoSection = ({
               >
                 <PlusIcon className="w-12 h-12 bg-gray-950 text-gray-0 rounded-full p-[14px]" />
               </button>
-              <span className="text-gray-950 text-body2">눌러서 할 일 추가</span>
+              <span className="text-gray-950 text-body2">
+                눌러서 할 일 추가
+              </span>
             </div>
           )}
         </section>

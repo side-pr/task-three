@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Dialog } from "@shared/ui";
 import { useForm } from "react-hook-form";

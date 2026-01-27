@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { cn } from "@shared/lib/style";
 import { useMemo, useRef, useEffect } from "react";
@@ -12,8 +12,8 @@ const DAY_OF_WEEK = ["일", "월", "화", "수", "목", "금", "토"] as const;
 
 const formatDate = (date: Date): string => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
 
@@ -34,7 +34,10 @@ export const DateSelectSection = ({
   onDateChange,
 }: DateSelectSectionProps) => {
   const selectedDateObj = new Date(selectedDate);
-  const dates = useMemo(() => generateMonthDates(selectedDateObj), [selectedDate]);
+  const dates = useMemo(
+    () => generateMonthDates(selectedDateObj),
+    [selectedDate],
+  );
   const listRef = useRef<HTMLUListElement>(null);
   const isInitialMount = useRef(true);
 
@@ -48,7 +51,7 @@ export const DateSelectSection = ({
 
       listRef.current.scrollTo({
         left: scrollPosition,
-        behavior: isInitialMount.current ? 'instant' : 'smooth',
+        behavior: isInitialMount.current ? "instant" : "smooth",
       });
       isInitialMount.current = false;
     }
@@ -59,9 +62,14 @@ export const DateSelectSection = ({
 
   return (
     <section className="flex flex-col w-full">
-      <h2>{year}년 {month}월</h2>
+      <h2>
+        {year}년 {month}월
+      </h2>
       <div className="flex gap-2 -mx-6 w-screen">
-        <ul ref={listRef} className="flex gap-2 w-full overflow-x-auto scroll-hide px-6">
+        <ul
+          ref={listRef}
+          className="flex gap-2 w-full overflow-x-auto scroll-hide px-6"
+        >
           {dates.map((date) => (
             <DateSelection
               key={formatDate(date)}
@@ -96,7 +104,7 @@ const DateSelection = ({
         "min-w-14 min-h-14 w-14 h-14",
         "flex flex-col items-center justify-center rounded-2xl",
         "bg-gray-100 text-gray-900 cursor-pointer",
-        isSelected && "bg-gray-800 text-gray-0"
+        isSelected && "bg-gray-800 text-gray-0",
       )}
     >
       <div className="w-10 h-10 flex flex-col items-center justify-center">
