@@ -56,7 +56,7 @@ export const MustTodoSection = ({
               </p>
             </div>
           ) : (
-            <ul className="flex flex-col gap-2 mt-3">
+            <ul className="flex flex-col gap-2">
               {scheduleItems.schedules.map((schedule) => (
                 <Draggable
                   key={schedule.scheduleId}

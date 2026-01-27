@@ -61,8 +61,8 @@ export const DateSelectSection = ({
   const month = selectedDateObj.getMonth() + 1;
 
   return (
-    <section className="flex flex-col w-full">
-      <h2>
+    <section className="flex flex-col w-full gap-3">
+      <h2 className="text-title1 font-bold text-gray-950">
         {year}년 {month}월
       </h2>
       <div className="flex gap-2 -mx-6 w-screen">
