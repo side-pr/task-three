@@ -28,7 +28,8 @@ export const TodoCreateModal = ({
     <Dialog.Root open={isOpen} onOpenChange={close}>
       <Dialog.Content>
         <form
-          onSubmit={() => {
+          onSubmit={(e) => {
+            e.preventDefault();
             handleSubmit(onCreate)();
             close();
           }}
