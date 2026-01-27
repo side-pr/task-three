@@ -43,6 +43,20 @@ export const TodoListItem = React.forwardRef<HTMLLIElement, TodoListItemProps>(
       return `${period} ${displayHour}:${minutes}`;
     };
 
+    const getTimeProgress = (startTime: string, endTime: string) => {
+      const toMinutes = (time: string) => {
+        const [h, m] = time.split(":").map(Number);
+        return h * 60 + m;
+      };
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const startMinutes = toMinutes(startTime);
+      const endMinutes = toMinutes(endTime);
+      const progress =
+        ((currentMinutes - startMinutes) / (endMinutes - startMinutes)) * 100;
+      return Math.min(100, Math.max(0, progress));
+    };
+
     return (
       <li
         ref={ref}
@@ -123,7 +137,12 @@ export const TodoListItem = React.forwardRef<HTMLLIElement, TodoListItemProps>(
               {formatTime(schedule.startTime)}
             </span>
             <div className="w-[186px] h-1 bg-gray-300 rounded-full">
-              <div className="w-[50%] h-full bg-gray-400 rounded-full" />
+              <div
+                className="h-full bg-gray-400 rounded-full"
+                style={{
+                  width: `${getTimeProgress(schedule.startTime, schedule.endTime)}%`,
+                }}
+              />
             </div>
             <span className="text-body3 text-gray-400 font-regular text-nowrap">
               {formatTime(schedule.endTime)}
