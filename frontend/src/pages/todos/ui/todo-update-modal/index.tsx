@@ -1,34 +1,39 @@
-'use client';
+"use client";
 
 import { Dialog } from "@shared/ui";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@shared/ui/input";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { todoQueries } from "../../api/todo.queries";
 export const TodoUpdateFormValues = z.object({
   name: z.string().min(1).max(20),
 });
 export type TodoUpdateFormValues = z.infer<typeof TodoUpdateFormValues>;
+
 export const TodoUpdateModal = ({
   isOpen,
   close,
   onSubmit,
+  taskId,
 }: {
   isOpen: boolean;
   close: () => void;
   onSubmit: (formData: { name: string }) => void;
+  taskId: number;
 }) => {
+  const { data: todoDetail } = useSuspenseQuery(todoQueries.detail(taskId));
   const { register, handleSubmit } = useForm<TodoUpdateFormValues>({
-    defaultValues: {
-      name: "",
-    },
+    defaultValues: todoDetail,
     resolver: zodResolver(TodoUpdateFormValues),
   });
   return (
     <Dialog.Root open={isOpen} onOpenChange={close}>
       <Dialog.Content>
         <form
-          onSubmit={() => {
+          onSubmit={(e) => {
+            e.preventDefault();
             handleSubmit(onSubmit)();
             close();
           }}

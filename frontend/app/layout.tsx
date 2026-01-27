@@ -18,14 +18,14 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`font-pretendard`}>
-        <OverlayProvider>
-        <div id="modal-root"></div>
-          <ReactQueryProvider>
+        <ReactQueryProvider>
+          <OverlayProvider>
+            <div id="modal-root"></div>
             <div className="w-full h-full flex flex-col items-center">
               {children}
             </div>
-          </ReactQueryProvider>
-        </OverlayProvider>
+          </OverlayProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
