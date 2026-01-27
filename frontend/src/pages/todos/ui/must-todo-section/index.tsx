@@ -71,6 +71,7 @@ export const MustTodoSection = ({
                   {({ ref, listeners, attributes, isDragging }) => (
                     <TodoListItem
                       isMust={true}
+                      schedule={schedule}
                       ref={ref}
                       {...listeners}
                       {...attributes}

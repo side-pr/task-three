@@ -1,5 +1,6 @@
 "use client";
 
+import { ScheduleItem } from "@/pages/todos/api/schedule-get-list";
 import { TodoItem } from "@/pages/todos/api/todo-get-list";
 import { TodoDeleteModal } from "@/pages/todos/ui/todo-delete-modal";
 import { TodoUpdateModal } from "@/pages/todos/ui/todo-update-modal";
@@ -8,20 +9,22 @@ import { CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
 import { overlay } from "overlay-kit";
 import React from "react";
 
-export const TodoListItem = React.forwardRef<
-  HTMLLIElement,
-  {
-    todo: TodoItem;
-    onDelete: () => void;
-    onUpdate: (formData: { name: string }) => void;
-    onEdit?: () => void;
-    onToggleComplete: () => void;
-    className?: string;
-    isMust?: boolean;
-  } & React.HTMLAttributes<HTMLLIElement>
->(
-  (
-    {
+type BaseProps = {
+  todo: TodoItem;
+  onDelete: () => void;
+  onUpdate: (formData: { name: string }) => void;
+  onEdit?: () => void;
+  onToggleComplete: () => void;
+  className?: string;
+} & React.HTMLAttributes<HTMLLIElement>;
+
+type TodoListItemProps =
+  | (BaseProps & { isMust?: false; schedule?: never })
+  | (BaseProps & { isMust: true; schedule: ScheduleItem });
+
+export const TodoListItem = React.forwardRef<HTMLLIElement, TodoListItemProps>(
+  (props, ref) => {
+    const {
       todo,
       onDelete,
       onUpdate,
@@ -29,14 +32,21 @@ export const TodoListItem = React.forwardRef<
       onToggleComplete,
       className,
       isMust,
-      ...props
-    },
-    ref,
-  ) => {
+      ...restProps
+    } = props;
+    const schedule = props.isMust ? props.schedule : undefined;
+    const formatTime = (time: string) => {
+      const [hours, minutes] = time.split(":");
+      const hour = parseInt(hours, 10);
+      const period = hour < 12 ? "오전" : "오후";
+      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      return `${period} ${displayHour}:${minutes}`;
+    };
+
     return (
       <li
         ref={ref}
-        {...props}
+        {...restProps}
         className={cn(
           "w-full h-fit rounded-2xl text-gray-950 py-3 bg-gray-200 px-3 flex flex-col gap-3",
           todo.isCompleted && "bg-gray-100 opacity-50",
@@ -107,16 +117,16 @@ export const TodoListItem = React.forwardRef<
             </button>
           </div>
         </div>
-        {isMust && (
+        {isMust && schedule && (
           <div className="flex items-center gap-2 w-full justify-center">
             <span className="text-body3 text-gray-400 font-regular text-nowrap">
-              오후 8:00
+              {formatTime(schedule.startTime)}
             </span>
             <div className="w-[186px] h-1 bg-gray-300 rounded-full">
               <div className="w-[50%] h-full bg-gray-400 rounded-full" />
             </div>
             <span className="text-body3 text-gray-400 font-regular text-nowrap">
-              오후 11:55
+              {formatTime(schedule.endTime)}
             </span>
           </div>
         )}
