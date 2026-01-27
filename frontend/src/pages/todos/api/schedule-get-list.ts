@@ -1,16 +1,15 @@
-import { apiRequester, HttpStatus } from "@shared/api";
+import { apiRequester, HttpStatus, ServiceApiResponse } from "@shared/api";
 import { ApiResponse } from "@shared/api/openapi/helper";
-import { AxiosResponse } from "axios";
 
 export const scheduleGetList = async (date: string) => {
-  const response = await apiRequester.get<ScheduleGetListResponse>(
+  const response = await apiRequester.get<ServiceApiResponse<ScheduleGetListResponse>>(
     "/api/schedules",
     { params: { date } }
   );
   return response.data.data;
 };
 
-export type ScheduleGetListResponse = AxiosResponse<
+export type ScheduleGetListResponse = 
   ApiResponse<"/api/schedules", "get", HttpStatus.OK>
->;
-export type ScheduleItem = ScheduleGetListResponse["data"]["schedules"][number];
+;
+export type ScheduleItem = ScheduleGetListResponse["schedules"][number];

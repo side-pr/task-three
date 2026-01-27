@@ -93,23 +93,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/schedules/{taskId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 할 일 상세 조회 */
-        get: operations["ScheduleController_getDetail"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/schedules/{scheduleId}": {
         parameters: {
             query?: never;
@@ -117,12 +100,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** 스케줄 상세 조회 */
+        get: operations["ScheduleController_getDetail"];
         /** 스케줄 내용 수정 */
         put: operations["ScheduleController_updateSchedule"];
         post?: never;
         /** 스케줄 삭제) */
-        delete: operations["ScheduleController_moveToTodoList"];
+        delete: operations["ScheduleController_deleteSchedule"];
         options?: never;
         head?: never;
         patch?: never;
@@ -229,22 +213,11 @@ export interface components {
             /** @description 응답 데이터 */
             data: components["schemas"]["TaskCreateResponseData"];
         };
-        ServiceApiResponse: {
-            /**
-             * @description 성공, 실패 여부 (success, error)
-             * @example success
-             */
-            status: number;
-            /**
-             * @description 응답 메시지
-             * @example success
-             */
-            message: string;
-            /**
-             * @description 결과 데이터 (있으면 데이터 출력, 없으면 null)
-             * @example null
-             */
-            data: Record<string, never>;
+        TaskDetailResponse: {
+            /** @description 할 일 ID */
+            taskId: number;
+            /** @description 할 일 이름 */
+            name: string;
         };
         TaskUpdateRequest: {
             /** @description 할일 이름 */
@@ -290,6 +263,23 @@ export interface components {
         ScheduleListResponse: {
             /** @description 스케줄 목록 */
             schedules: components["schemas"]["ScheduleItemResponse"][];
+        };
+        ServiceApiResponse: {
+            /**
+             * @description 성공, 실패 여부 (success, error)
+             * @example success
+             */
+            status: number;
+            /**
+             * @description 응답 메시지
+             * @example success
+             */
+            message: string;
+            /**
+             * @description 결과 데이터 (있으면 데이터 출력, 없으면 null)
+             * @example null
+             */
+            data: Record<string, never>;
         };
         ScheduleCreateRequest: {
             /** @description 할 일 ID */
@@ -388,7 +378,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ServiceApiResponse"];
+                    "application/json": components["schemas"]["TaskDetailResponse"];
                 };
             };
         };
@@ -535,7 +525,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 할 일 상세 조회 성공 */
+            /** @description 스케줄 상세 조회 성공 */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -572,7 +562,7 @@ export interface operations {
             };
         };
     };
-    ScheduleController_moveToTodoList: {
+    ScheduleController_deleteSchedule: {
         parameters: {
             query?: never;
             header?: never;

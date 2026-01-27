@@ -67,7 +67,7 @@ export class TaskController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: '할 일 상세 조회 성공',
-    type: ServiceApiResponse<TaskDetailResponse>,
+    type: TaskDetailResponse,
   })
   async getDetail(
     @Param('taskId') taskId: number,
