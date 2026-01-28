@@ -52,3 +52,5 @@ settings.local.json
 
 
 .docs
+
+*.ait

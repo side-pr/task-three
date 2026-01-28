@@ -27,7 +27,8 @@
       "Bash(npm run build:*)",
       "Bash(ls:*)",
       "Bash(yarn:*)",
-      "Bash(PNP_DISABLE=1 yarn build:*)"
+      "Bash(PNP_DISABLE=1 yarn build:*)",
+      "Bash(grep:*)"
     ]
   }
 }
