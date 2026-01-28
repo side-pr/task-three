@@ -1,5 +1,3 @@
-'use client';
-
 import { getQueryClient } from "@shared/lib/react-query/get-query-client";
 import { todoCreate } from "@/pages/todos/api/todo-create";
 import { todoDelete } from "@/pages/todos/api/todo-delete";
@@ -24,7 +22,7 @@ import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@/pages/todos/ui/schedule-create-modal";
 import { ScheduleUpdateModal } from "@/pages/todos/ui/schedule-update-modal";
 import { ScheduleItem } from "@/pages/todos/api/schedule-get-list";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "react-router-dom";
 
 const getToday = () => new Date().toISOString().split("T")[0];
 
@@ -37,7 +35,7 @@ type DragData = {
 
 export const TodoPage = ({date}: {date: string}) => {
   const selectedDate = date ?? getToday();
-  const router = useRouter();
+  const [, setSearchParams] = useSearchParams();
   const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions(selectedDate));
   const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions(selectedDate));
   const { mutateAsync: deleteTodo } = useMutation(todoDeleteMutationOptions(selectedDate));
@@ -137,7 +135,7 @@ export const TodoPage = ({date}: {date: string}) => {
           <DateSelectSection
             selectedDate={selectedDate}
             onDateChange={(date) => {
-              router.push(`?date=${date}`);
+              setSearchParams({ date });
             }}
           />
 

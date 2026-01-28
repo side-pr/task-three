@@ -1,5 +1,3 @@
-'use client';
-
 import { Dialog } from "@shared/ui";
 
 export const TodoDeleteModal = ({

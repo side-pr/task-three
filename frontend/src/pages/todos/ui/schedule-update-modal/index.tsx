@@ -1,5 +1,3 @@
-'use client';
-
 import { Dialog } from "@shared/ui";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
