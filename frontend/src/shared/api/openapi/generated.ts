@@ -191,6 +191,8 @@ export interface components {
         TaskCreateRequest: {
             /** @description 할일 이름 */
             name: string;
+            /** @description 목표 날짜 (YYYY-MM-DD) */
+            targetDate: string;
         };
         TaskCreateResponseData: {
             /**

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskCreateRequest } from 'src/dto/task-create-request.dto';
+import { TaskUpdateRequest } from 'src/dto/task-update-request.dto';
 import { TaskDetailResponse } from 'src/dto/task-detail-response.dto';
 import {
   TaskItemResponse,
@@ -13,7 +14,7 @@ import {
 import { Member } from 'src/entities/member.entity';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Task } from 'src/entities/task.entity';
-import { Repository } from 'typeorm';
+import { Repository, LessThanOrEqual } from 'typeorm';
 
 @Injectable()
 export class TaskService {
@@ -28,50 +29,69 @@ export class TaskService {
     const today = new Date().toISOString().split('T')[0];
     const isToday = date === today;
 
+    let tasks: Task[];
+
     if (isToday) {
-      // 오늘이면 기존 로직 (schedule에 없는 task)
-      const tasks = await this.taskRepository.find({
-        where: member ? { member: { id: member.id } } : {},
-        order: {
-          createdAt: 'DESC',
+      // 오늘 조회: 오늘 이전의 미완료 task + 오늘 task
+      const memberCondition = member ? { member: { id: member.id } } : {};
+
+      // 과거 미완료 task
+      const pastUncompletedTasks = await this.taskRepository.find({
+        where: {
+          targetDate: LessThanOrEqual(today),
+          isCompleted: false,
+          ...memberCondition,
         },
+        order: { createdAt: 'DESC' },
       });
 
-      const schedules = await this.scheduleRepository.find({
-        relations: ['task'],
-        where: member ? { member: { id: member.id } } : {},
+      // 오늘 완료된 task
+      const todayCompletedTasks = await this.taskRepository.find({
+        where: {
+          targetDate: today,
+          isCompleted: true,
+          ...memberCondition,
+        },
+        order: { createdAt: 'DESC' },
       });
 
-      // schedule에 연결된 task id 목록
-      const scheduledTaskIds = schedules
-        .filter((schedule) => schedule.task !== null)
-        .map((schedule) => schedule.task!.id);
-
-      // schedule에 없는 task만 필터링
-      const filteredTasks = tasks.filter(
-        (task) => !scheduledTaskIds.includes(task.id),
-      );
-
-      const taskItems = filteredTasks.map(
-        (task) => new TaskItemResponse(task.id, task.name, task.isCompleted),
-      );
-
-      return new TaskListResponse(taskItems);
+      // 중복 제거하여 합치기
+      const taskIds = new Set<number>();
+      tasks = [...pastUncompletedTasks, ...todayCompletedTasks].filter((task) => {
+        if (taskIds.has(task.id)) return false;
+        taskIds.add(task.id);
+        return true;
+      });
+    } else {
+      // 다른 날짜: 해당 날짜의 task만 조회
+      tasks = await this.taskRepository.find({
+        where: {
+          targetDate: date,
+          ...(member ? { member: { id: member.id } } : {}),
+        },
+        order: { createdAt: 'DESC' },
+      });
     }
 
-    // 오늘이 아니면 해당 날짜에 완료된 task만 조회
-    console.log('member', member);
-    const tasks = await this.taskRepository.find({
+    // 해당 날짜의 schedule에 연결된 task id 목록
+    const schedules = await this.scheduleRepository.find({
+      relations: ['task'],
       where: {
-        completedAt: date,
+        targetDate: date,
         ...(member ? { member: { id: member.id } } : {}),
       },
-      order: {
-        createdAt: 'DESC',
-      },
     });
-    console.log('tasks', tasks);
-    const taskItems = tasks.map(
+
+    const scheduledTaskIds = schedules
+      .filter((schedule) => schedule.task !== null)
+      .map((schedule) => schedule.task!.id);
+
+    // schedule에 없는 task만 필터링
+    const filteredTasks = tasks.filter(
+      (task) => !scheduledTaskIds.includes(task.id),
+    );
+
+    const taskItems = filteredTasks.map(
       (task) => new TaskItemResponse(task.id, task.name, task.isCompleted),
     );
 
@@ -89,7 +109,7 @@ export class TaskService {
 
   async updateContent(
     taskId: number,
-    taskCreateRequestDto: TaskCreateRequest,
+    taskUpdateRequestDto: TaskUpdateRequest,
     member?: Member,
   ): Promise<void> {
     const task = await this.taskRepository.findOne({
@@ -102,7 +122,7 @@ export class TaskService {
     if (member && task.member?.id !== member.id) {
       throw new ForbiddenException('해당 할 일을 수정할 권한이 없습니다.');
     }
-    task.name = taskCreateRequestDto.name;
+    task.name = taskUpdateRequestDto.name;
     await this.taskRepository.save(task);
   }
 

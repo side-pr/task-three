@@ -8,6 +8,9 @@ export class Task extends BaseModel {
   @Column()
   name: string;
 
+  @Column({ type: 'date', nullable: true })
+  targetDate: string | null;
+
   @Column({ default: false })
   isCompleted: boolean;
 

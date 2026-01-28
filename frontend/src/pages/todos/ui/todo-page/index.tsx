@@ -163,7 +163,7 @@ export const TodoPage = ({date}: {date: string}) => {
                         todoItems={todoItems}
                         isPastDate={isPastDate(selectedDate)}
                         scheduleCount={scheduleItems.schedules?.length ?? 0}
-                        onCreate={(formData: { name: string }) => createTodo(formData)}
+                        onCreate={(formData: { name: string }) => createTodo({ ...formData, targetDate: selectedDate })}
                         onUpdate={(todoId: number, formData: { name: string }) =>
                           updateTodo({
                             pathParams: { taskId: todoId },
