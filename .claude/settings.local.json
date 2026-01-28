@@ -24,7 +24,10 @@
       "Bash(npm run start:dev:*)",
       "Bash(yarn build)",
       "Bash(find:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(ls:*)",
+      "Bash(yarn:*)",
+      "Bash(PNP_DISABLE=1 yarn build:*)"
     ]
   }
 }
