@@ -10,6 +10,8 @@ import { overlay } from "overlay-kit";
 
 export const TodoSection = ({
   todoItems,
+  isPastDate = false,
+  scheduleCount = 0,
   onCreate,
   onUpdate,
   onDelete,
@@ -17,6 +19,8 @@ export const TodoSection = ({
   onCancelComplete,
 }: {
   todoItems: { tasks: TodoItem[] };
+  isPastDate?: boolean;
+  scheduleCount?: number;
   onCreate: (formData: { name: string }) => void;
   onUpdate: (todoId: number, formData: { name: string }) => void;
   onDelete: (todoId: number) => void;
@@ -24,6 +28,8 @@ export const TodoSection = ({
   onCancelComplete: (todoId: number) => void;
 }) => {
   const itemCount = todoItems.tasks?.length ?? 0;
+  const canCreateTodo = !isPastDate;
+  const canDragToSchedule = scheduleCount < 3;
 
   return (
     <Droppable id="todo-section">
@@ -43,7 +49,7 @@ export const TodoSection = ({
                 생각나는 일 모두 적기
               </p>
             </div>
-            {itemCount > 0 && (
+            {itemCount > 0 && canCreateTodo && (
               <button
                 onClick={() => {
                   overlay.open(({ isOpen, close }) => (
@@ -71,13 +77,14 @@ export const TodoSection = ({
                   taskName: todo.name,
                   isCompleted: todo.isCompleted,
                 }}
+                disabled={!canDragToSchedule}
               >
                 {({ ref, listeners, attributes, isDragging }) => (
                   <TodoListItem
                     ref={ref}
-                    {...listeners}
+                    {...(canDragToSchedule ? listeners : {})}
                     {...attributes}
-                    className={`cursor-move touch-none ${
+                    className={`${canDragToSchedule ? 'cursor-move' : 'cursor-default'} touch-none ${
                       isDragging ? "opacity-50" : ""
                     }`}
                     todo={todo}
@@ -105,23 +112,31 @@ export const TodoSection = ({
                 backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23D1D5DB' stroke-width='1' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
               }}
             >
-              <button
-                className="flex flex-col items-center justify-center"
-                onClick={() => {
-                  overlay.open(({ isOpen, close }) => (
-                    <TodoCreateModal
-                      onCreate={onCreate}
-                      isOpen={isOpen}
-                      close={close}
-                    />
-                  ));
-                }}
-              >
-                <PlusIcon className="w-12 h-12 bg-gray-950 text-gray-0 rounded-full p-[14px]" />
-              </button>
-              <span className="text-gray-950 text-body2">
-                눌러서 할 일 추가
-              </span>
+              {canCreateTodo ? (
+                <>
+                  <button
+                    className="flex flex-col items-center justify-center"
+                    onClick={() => {
+                      overlay.open(({ isOpen, close }) => (
+                        <TodoCreateModal
+                          onCreate={onCreate}
+                          isOpen={isOpen}
+                          close={close}
+                        />
+                      ));
+                    }}
+                  >
+                    <PlusIcon className="w-12 h-12 bg-gray-950 text-gray-0 rounded-full p-[14px]" />
+                  </button>
+                  <span className="text-gray-950 text-body2">
+                    눌러서 할 일 추가
+                  </span>
+                </>
+              ) : (
+                <span className="text-gray-500 text-body2">
+                  과거 날짜에는 할 일을 추가할 수 없습니다
+                </span>
+              )}
             </div>
           )}
         </section>

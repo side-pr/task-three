@@ -11,6 +11,9 @@ export const ScheduleUpdateFormValues = z.object({
   name: z.string().min(1, "이름을 입력해주세요"),
   startTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "HH:MM 형식으로 입력해주세요"),
   endTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "HH:MM 형식으로 입력해주세요"),
+}).refine((data) => data.startTime < data.endTime, {
+  message: "종료 시간은 시작 시간보다 늦어야 합니다",
+  path: ["endTime"],
 });
 
 export type ScheduleUpdateFormValues = z.infer<typeof ScheduleUpdateFormValues>;

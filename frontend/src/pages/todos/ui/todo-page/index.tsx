@@ -28,6 +28,8 @@ import { useRouter } from "next/navigation";
 
 const getToday = () => new Date().toISOString().split("T")[0];
 
+const isPastDate = (date: string) => date < getToday();
+
 type DragData = {
   scheduleId?: number;
   taskId: number;
@@ -105,7 +107,7 @@ export const TodoPage = ({date}: {date: string}) => {
               taskId: data.taskId,
               startTime: formData.startTime + ":00",
               endTime: formData.endTime + ":00",
-              targetDate: new Date().toISOString().split("T")[0],
+              targetDate: selectedDate,
             });
             close();
           }}
@@ -144,35 +146,39 @@ export const TodoPage = ({date}: {date: string}) => {
           <div className="w-full flex flex-col gap-6">
             <SuspenseQuery {...scheduleQueries.list(selectedDate)}>
               {({ data: scheduleItems }) => (
-                <MustTodoSection
-                  scheduleItems={scheduleItems}
-                  onDelete={(scheduleId) => deleteSchedule({ scheduleId })}
-                  onUpdate={handleScheduleUpdate}
-                  onComplete={(scheduleId) => completeSchedule({ scheduleId })}
-                  onCancelComplete={(scheduleId) =>
-                    cancelCompleteSchedule({ scheduleId })
-                  }
-                />
-              )}
-            </SuspenseQuery>
+                <>
+                  <MustTodoSection
+                    scheduleItems={scheduleItems}
+                    onDelete={(scheduleId) => deleteSchedule({ scheduleId })}
+                    onUpdate={handleScheduleUpdate}
+                    onComplete={(scheduleId) => completeSchedule({ scheduleId })}
+                    onCancelComplete={(scheduleId) =>
+                      cancelCompleteSchedule({ scheduleId })
+                    }
+                  />
 
-            <SuspenseQuery {...todoQueries.list(selectedDate)}>
-              {({ data: todoItems }) => (
-                <TodoSection
-                  todoItems={todoItems}
-                  onCreate={(formData: { name: string }) => createTodo(formData)}
-                  onUpdate={(todoId: number, formData: { name: string }) =>
-                    updateTodo({
-                      pathParams: { taskId: todoId },
-                      formData,
-                    })
-                  }
-                  onDelete={(todoId) => deleteTodo({ taskId: todoId })}
-                  onComplete={(todoId) => completeTodo({ taskId: todoId })}
-                  onCancelComplete={(todoId) =>
-                    cancelCompleteTodo({ taskId: todoId })
-                  }
-                />
+                  <SuspenseQuery {...todoQueries.list(selectedDate)}>
+                    {({ data: todoItems }) => (
+                      <TodoSection
+                        todoItems={todoItems}
+                        isPastDate={isPastDate(selectedDate)}
+                        scheduleCount={scheduleItems.schedules?.length ?? 0}
+                        onCreate={(formData: { name: string }) => createTodo(formData)}
+                        onUpdate={(todoId: number, formData: { name: string }) =>
+                          updateTodo({
+                            pathParams: { taskId: todoId },
+                            formData,
+                          })
+                        }
+                        onDelete={(todoId) => deleteTodo({ taskId: todoId })}
+                        onComplete={(todoId) => completeTodo({ taskId: todoId })}
+                        onCancelComplete={(todoId) =>
+                          cancelCompleteTodo({ taskId: todoId })
+                        }
+                      />
+                    )}
+                  </SuspenseQuery>
+                </>
               )}
             </SuspenseQuery>
           </div>
