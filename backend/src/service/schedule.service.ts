@@ -9,7 +9,7 @@ import {
 import { Member } from 'src/entities/member.entity';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Task } from 'src/entities/task.entity';
-import { LessThan, Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 
 @Injectable()
 export class ScheduleService {
@@ -22,55 +22,56 @@ export class ScheduleService {
 
   async findAll(date: string, member?: Member): Promise<ScheduleListResponse> {
     const today = new Date().toISOString().split('T')[0];
-
-    // 지난 날짜의 미완료 Schedule 삭제 (Task는 유지)
-    await this.scheduleRepository.delete({
-      targetDate: LessThan(today),
-      isCompleted: false,
-    });
-
     const isToday = date === today;
+    const memberCondition = member ? { member: { id: member.id } } : {};
+
+    let schedules: Schedule[];
 
     if (isToday) {
-      // 오늘이면 오늘 Schedule 조회
-      const schedules = await this.scheduleRepository.find({
+      // 오늘 조회: 과거~오늘의 미완료 스케줄 + 오늘 완료된 스케줄
+      const pastUncompletedSchedules = await this.scheduleRepository.find({
+        relations: ['task'],
+        where: {
+          targetDate: LessThanOrEqual(today),
+          isCompleted: false,
+          ...memberCondition,
+        },
+        order: { startTime: 'ASC' },
+      });
+
+      const todayCompletedSchedules = await this.scheduleRepository.find({
         relations: ['task'],
         where: {
           targetDate: today,
-          ...(member ? { member: { id: member.id } } : {}),
+          isCompleted: true,
+          ...memberCondition,
         },
-        order: {
-          startTime: 'ASC',
-        },
+        order: { startTime: 'ASC' },
       });
 
-      const scheduleItems = schedules.map(
-        (schedule) =>
-          new ScheduleItemResponse(
-            schedule.id,
-            schedule.task?.id || 0,
-            schedule.task?.name || '',
-            schedule.startTime,
-            schedule.endTime,
-            schedule.targetDate,
-            schedule.isCompleted,
-          ),
+      // 중복 제거하여 합치기
+      const scheduleIds = new Set<number>();
+      schedules = [...pastUncompletedSchedules, ...todayCompletedSchedules].filter(
+        (schedule) => {
+          if (scheduleIds.has(schedule.id)) return false;
+          scheduleIds.add(schedule.id);
+          return true;
+        },
       );
 
-      return new ScheduleListResponse(scheduleItems);
+      // 시작 시간순 정렬
+      schedules.sort((a, b) => a.startTime.localeCompare(b.startTime));
+    } else {
+      // 다른 날짜: 해당 날짜의 스케줄 조회
+      schedules = await this.scheduleRepository.find({
+        relations: ['task'],
+        where: {
+          targetDate: date,
+          ...memberCondition,
+        },
+        order: { startTime: 'ASC' },
+      });
     }
-
-    // 오늘이 아니면 해당 날짜에 완료된 schedule만 조회
-    const schedules = await this.scheduleRepository.find({
-      relations: ['task'],
-      where: {
-        completedAt: date,
-        ...(member ? { member: { id: member.id } } : {}),
-      },
-      order: {
-        startTime: 'ASC',
-      },
-    });
 
     const scheduleItems = schedules.map(
       (schedule) =>
