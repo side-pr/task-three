@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Dialog } from "@shared/ui";
 import { useForm } from "react-hook-form";
@@ -7,8 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@shared/ui/input";
 
 export const ScheduleCreateFormValues = z.object({
-  startTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "HH:MM 형식으로 입력해주세요"),
-  endTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "HH:MM 형식으로 입력해주세요"),
+  startTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "HH:MM 형식으로 입력해주세요"),
+  endTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "HH:MM 형식으로 입력해주세요"),
 });
 
 export type ScheduleCreateFormValues = z.infer<typeof ScheduleCreateFormValues>;
@@ -24,7 +28,11 @@ export const ScheduleCreateModal = ({
   todoName: string;
   onConfirm: (formData: { startTime: string; endTime: string }) => void;
 }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<ScheduleCreateFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ScheduleCreateFormValues>({
     defaultValues: {
       startTime: "",
       endTime: "",
@@ -34,7 +42,7 @@ export const ScheduleCreateModal = ({
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={close}>
-      <Dialog.Content>
+      <Dialog.Content onOpenAutoFocus={(e) => e.preventDefault()}>
         <form
           onSubmit={handleSubmit((data) => {
             onConfirm(data);
@@ -63,7 +71,9 @@ export const ScheduleCreateModal = ({
                 placeholder="09:00"
               />
               {errors.startTime && (
-                <span className="text-red-500 text-sm">{errors.startTime.message}</span>
+                <span className="text-red-500 text-sm">
+                  {errors.startTime.message}
+                </span>
               )}
             </div>
 
@@ -81,7 +91,9 @@ export const ScheduleCreateModal = ({
                 placeholder="18:00"
               />
               {errors.endTime && (
-                <span className="text-red-500 text-sm">{errors.endTime.message}</span>
+                <span className="text-red-500 text-sm">
+                  {errors.endTime.message}
+                </span>
               )}
             </div>
           </fieldset>
