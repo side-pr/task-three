@@ -28,7 +28,8 @@
       "Bash(ls:*)",
       "Bash(yarn:*)",
       "Bash(PNP_DISABLE=1 yarn build:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "WebFetch(domain:task-three-nine.vercel.app)"
     ]
   }
 }
