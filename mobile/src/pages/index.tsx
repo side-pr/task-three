@@ -15,7 +15,6 @@ function Page() {
         source={{ uri: config.webUrl }}
         style={styles.webview}
         scalesPageToFit={false}
-        setBuiltInZoomControls={false}
         injectedJavaScript={`
           const meta = document.createElement('meta');
           meta.name = 'viewport';
@@ -26,6 +25,17 @@ function Page() {
           } else {
             document.head.appendChild(meta);
           }
+
+          document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+              e.preventDefault();
+            }
+          }, { passive: false });
+
+          document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+          });
+
           true;
         `}
       />
