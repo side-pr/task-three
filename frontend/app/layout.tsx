@@ -2,12 +2,19 @@
 import {ReactQueryProvider } from "@app/providers";
 import "@app/styles/globals.css";
 import "@app/styles/font.css";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { OverlayProvider } from "overlay-kit";
 
 export const metadata: Metadata = {
   title: "Task Three",
   description: "Task Three",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

@@ -29,7 +29,8 @@
       "Bash(yarn:*)",
       "Bash(PNP_DISABLE=1 yarn build:*)",
       "Bash(grep:*)",
-      "WebFetch(domain:task-three-nine.vercel.app)"
+      "WebFetch(domain:task-three-nine.vercel.app)",
+      "WebFetch(domain:stackoverflow.com)"
     ]
   }
 }
