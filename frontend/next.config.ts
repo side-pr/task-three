@@ -13,4 +13,6 @@ const nextConfig: NextConfig = {
   },
 };
 
+// 이 코드는 내가 접수한다
+
 export default nextConfig;
