@@ -9,7 +9,7 @@ export class Member extends BaseModel {
     nullable: false,
   })
   socialType: SocialType;
-
+  //a
   @Column({ type: 'varchar', length: 255 })
   providerId: string;
 }
