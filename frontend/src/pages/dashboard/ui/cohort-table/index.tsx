@@ -86,12 +86,20 @@ export const CohortTable = <T,>({
                 const registered = getRegistered(cell);
                 const completed = getCompleted(cell);
                 const hasActivity = registered > 0 || completed > 0;
+                if (!hasActivity) {
+                  return (
+                    <td
+                      key={i}
+                      className="px-2 py-1.5 text-center text-gray-300"
+                    >
+                      -
+                    </td>
+                  );
+                }
                 return (
                   <td
                     key={i}
-                    className={`px-2 py-1.5 text-center whitespace-nowrap font-medium ${
-                      hasActivity ? activeCellClass : "text-gray-400"
-                    }`}
+                    className={`px-2 py-1.5 text-center whitespace-nowrap font-medium ${activeCellClass}`}
                   >
                     {registered}/{completed}
                   </td>

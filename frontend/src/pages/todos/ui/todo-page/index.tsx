@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { getQueryClient } from "@shared/lib/react-query/get-query-client";
 import { todoCreate } from "@/pages/todos/api/todo-create";
@@ -38,35 +38,41 @@ type DragData = {
   isCompleted: boolean;
 };
 
-export const TodoPage = ({date}: {date: string}) => {
+export const TodoPage = ({ date }: { date: string }) => {
   const selectedDate = date ?? getToday();
   const router = useRouter();
-  const { mutateAsync: createTodo } = useMutation(todoCreateMutationOptions(selectedDate));
-  const { mutateAsync: updateTodo } = useMutation(todoUpdateMutationOptions(selectedDate));
-  const { mutateAsync: deleteTodo } = useMutation(todoDeleteMutationOptions(selectedDate));
+  const { mutateAsync: createTodo } = useMutation(
+    todoCreateMutationOptions(selectedDate),
+  );
+  const { mutateAsync: updateTodo } = useMutation(
+    todoUpdateMutationOptions(selectedDate),
+  );
+  const { mutateAsync: deleteTodo } = useMutation(
+    todoDeleteMutationOptions(selectedDate),
+  );
   const { mutateAsync: completeTodo } = useMutation(
-    todoCompleteMutationOptions(selectedDate)
+    todoCompleteMutationOptions(selectedDate),
   );
   const { mutateAsync: cancelCompleteTodo } = useMutation(
-    todoCancelCompleteMutationOptions(selectedDate)
+    todoCancelCompleteMutationOptions(selectedDate),
   );
   const { mutateAsync: createSchedule } = useMutation(
-    scheduleCreateMutationOptions(selectedDate)
+    scheduleCreateMutationOptions(selectedDate),
   );
   const { mutateAsync: deleteSchedule } = useMutation(
-    scheduleDeleteMutationOptions(selectedDate)
+    scheduleDeleteMutationOptions(selectedDate),
   );
   const { mutateAsync: completeSchedule } = useMutation(
-    scheduleCompleteMutationOptions(selectedDate)
+    scheduleCompleteMutationOptions(selectedDate),
   );
   const { mutateAsync: cancelCompleteSchedule } = useMutation(
-    scheduleCancelCompleteMutationOptions(selectedDate)
+    scheduleCancelCompleteMutationOptions(selectedDate),
   );
   const { mutateAsync: moveScheduleToTodoList } = useMutation(
-    scheduleMoveToTodoListMutationOptions(selectedDate)
+    scheduleMoveToTodoListMutationOptions(selectedDate),
   );
   const { mutateAsync: updateSchedule } = useMutation(
-    scheduleUpdateMutationOptions(selectedDate)
+    scheduleUpdateMutationOptions(selectedDate),
   );
 
   const handleScheduleUpdate = (schedule: ScheduleItem) => {
@@ -99,7 +105,7 @@ export const TodoPage = ({date}: {date: string}) => {
     // todo -> must-todo: schedule 생성
     if (overId === "must-todo-section" && !data.scheduleId) {
       overlay.open(({ isOpen, close }) => (
-          <ScheduleCreateModal
+        <ScheduleCreateModal
           isOpen={isOpen}
           close={close}
           todoName={data.taskName}
@@ -137,14 +143,6 @@ export const TodoPage = ({date}: {date: string}) => {
     >
       <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
         <div className="w-full h-full flex flex-col items-center gap-6  px-6">
-          <div className="w-full flex justify-end">
-            <Link
-              href="/dashboard"
-              className="text-sm text-blue-500 hover:text-blue-700 font-medium"
-            >
-              대시보드 &rarr;
-            </Link>
-          </div>
           <DateSelectSection
             selectedDate={selectedDate}
             onDateChange={(date) => {
@@ -160,7 +158,9 @@ export const TodoPage = ({date}: {date: string}) => {
                     scheduleItems={scheduleItems}
                     onDelete={(scheduleId) => deleteSchedule({ scheduleId })}
                     onUpdate={handleScheduleUpdate}
-                    onComplete={(scheduleId) => completeSchedule({ scheduleId })}
+                    onComplete={(scheduleId) =>
+                      completeSchedule({ scheduleId })
+                    }
                     onCancelComplete={(scheduleId) =>
                       cancelCompleteSchedule({ scheduleId })
                     }
@@ -172,15 +172,22 @@ export const TodoPage = ({date}: {date: string}) => {
                         todoItems={todoItems}
                         isPastDate={isPastDate(selectedDate)}
                         scheduleCount={scheduleItems.schedules?.length ?? 0}
-                        onCreate={(formData: { name: string }) => createTodo({ ...formData, targetDate: selectedDate })}
-                        onUpdate={(todoId: number, formData: { name: string }) =>
+                        onCreate={(formData: { name: string }) =>
+                          createTodo({ ...formData, targetDate: selectedDate })
+                        }
+                        onUpdate={(
+                          todoId: number,
+                          formData: { name: string },
+                        ) =>
                           updateTodo({
                             pathParams: { taskId: todoId },
                             formData,
                           })
                         }
                         onDelete={(todoId) => deleteTodo({ taskId: todoId })}
-                        onComplete={(todoId) => completeTodo({ taskId: todoId })}
+                        onComplete={(todoId) =>
+                          completeTodo({ taskId: todoId })
+                        }
                         onCancelComplete={(todoId) =>
                           cancelCompleteTodo({ taskId: todoId })
                         }
