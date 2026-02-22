@@ -14,7 +14,7 @@ type CohortTableProps<T> = {
   rows: T[];
   columns: Column<T>[];
   dayHeaders: string[];
-  getDays: (row: T) => CohortCell[];
+  getDays: (row: T) => (CohortCell | null)[];
   getRegistered: (cell: CohortCell) => number;
   getCompleted: (cell: CohortCell) => number;
   rowKey: (row: T) => string;
@@ -86,20 +86,12 @@ export const CohortTable = <T,>({
                 const registered = getRegistered(cell);
                 const completed = getCompleted(cell);
                 const hasActivity = registered > 0 || completed > 0;
-                if (!hasActivity) {
-                  return (
-                    <td
-                      key={i}
-                      className="px-2 py-1.5 text-center text-gray-300"
-                    >
-                      -
-                    </td>
-                  );
-                }
                 return (
                   <td
                     key={i}
-                    className={`px-2 py-1.5 text-center whitespace-nowrap font-medium ${activeCellClass}`}
+                    className={`px-2 py-1.5 text-center whitespace-nowrap font-medium ${
+                      hasActivity ? activeCellClass : "text-gray-400"
+                    }`}
                   >
                     {registered}/{completed}
                   </td>
