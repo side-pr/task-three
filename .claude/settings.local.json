@@ -30,7 +30,8 @@
       "Bash(PNP_DISABLE=1 yarn build:*)",
       "Bash(grep:*)",
       "WebFetch(domain:task-three-nine.vercel.app)",
-      "WebFetch(domain:stackoverflow.com)"
+      "WebFetch(domain:stackoverflow.com)",
+      "Bash(lsof -ti :8000 | xargs kill -9 2>&1; sleep 1 && cd /Users/songhyeonmyeong/Desktop/task-three/backend && yarn start:dev 2>&1)"
     ]
   }
 }
