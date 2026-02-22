@@ -88,8 +88,11 @@ export class DashboardService {
       { memberIds: Set<number>; memberCount: number }
     >();
 
+    const minDate = '2026-02-06';
+
     for (const member of members) {
       const signupDate = new Date(member.createdAt).toISOString().split('T')[0];
+      if (signupDate < minDate) continue;
       if (!cohortMap.has(signupDate)) {
         cohortMap.set(signupDate, { memberIds: new Set(), memberCount: 0 });
       }
