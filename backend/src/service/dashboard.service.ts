@@ -256,7 +256,9 @@ export class DashboardService {
         289: 'interview',
       };
       const name = nameMap[member.id];
-      row.label = name ? `M${index + 1} (${name})` : `M${index + 1}`;
+      row.label = name
+        ? `#${member.id} (${name})`
+        : `#${member.id}`;
       row.signupDate = signupDate;
       row.days = cells;
       return row;
