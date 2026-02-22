@@ -213,21 +213,26 @@ export class DashboardService {
       const signupDate = new Date(member.createdAt).toISOString().split('T')[0];
       const maxDayOffset = this.diffDays(baseDate, today);
 
-      const cells: CohortCellResponse[] = [];
+      const memberStartOffset = Math.max(0, this.diffDays(baseDate, signupDate));
+      const cells: (CohortCellResponse | null)[] = [];
       for (let d = 0; d <= maxDayOffset; d++) {
-        const cell = new CohortCellResponse();
-        cell.taskRegistered = 0;
-        cell.taskCompleted = 0;
-        cell.scheduleRegistered = 0;
-        cell.scheduleCompleted = 0;
-        cells.push(cell);
+        if (d < memberStartOffset) {
+          cells.push(null);
+        } else {
+          const cell = new CohortCellResponse();
+          cell.taskRegistered = 0;
+          cell.taskCompleted = 0;
+          cell.scheduleRegistered = 0;
+          cell.scheduleCompleted = 0;
+          cells.push(cell);
+        }
       }
 
       const memberTasks = tasksByMember.get(member.id) ?? [];
       for (const task of memberTasks) {
         if (!task.targetDate) continue;
         const dayOffset = this.diffDays(baseDate, task.targetDate);
-        if (dayOffset < 0 || dayOffset > maxDayOffset) continue;
+        if (dayOffset < 0 || dayOffset > maxDayOffset || !cells[dayOffset]) continue;
         cells[dayOffset].taskRegistered++;
         if (task.isCompleted) cells[dayOffset].taskCompleted++;
       }
@@ -235,7 +240,7 @@ export class DashboardService {
       const memberSchedules = schedulesByMember.get(member.id) ?? [];
       for (const schedule of memberSchedules) {
         const dayOffset = this.diffDays(baseDate, schedule.targetDate);
-        if (dayOffset < 0 || dayOffset > maxDayOffset) continue;
+        if (dayOffset < 0 || dayOffset > maxDayOffset || !cells[dayOffset]) continue;
         cells[dayOffset].scheduleRegistered++;
         if (schedule.isCompleted) cells[dayOffset].scheduleCompleted++;
       }

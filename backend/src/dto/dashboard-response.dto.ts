@@ -74,10 +74,9 @@ export class MemberCohortRowResponse {
   signupDate: string;
 
   @ApiProperty({
-    description: 'Day0, Day1, Day2, ... 별 활동 데이터',
-    type: [CohortCellResponse],
+    description: 'Day0, Day1, Day2, ... 별 활동 데이터 (가입 전은 null)',
   })
-  days: CohortCellResponse[];
+  days: (CohortCellResponse | null)[];
 }
 
 export class DashboardResponse {
