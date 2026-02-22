@@ -66,6 +66,20 @@ export class CohortRowResponse {
   days: CohortCellResponse[];
 }
 
+export class MemberCohortRowResponse {
+  @ApiProperty({ description: '멤버 라벨', example: 'M1' })
+  label: string;
+
+  @ApiProperty({ description: '가입일', example: '2026-02-20' })
+  signupDate: string;
+
+  @ApiProperty({
+    description: 'Day0, Day1, Day2, ... 별 활동 데이터',
+    type: [CohortCellResponse],
+  })
+  days: CohortCellResponse[];
+}
+
 export class DashboardResponse {
   @ApiProperty({ description: '오늘 기준 일별 통계', type: DailyStatsResponse })
   dailyStats: DailyStatsResponse;
@@ -78,4 +92,13 @@ export class DashboardResponse {
 
   @ApiProperty({ description: '코호트 최대 Day 수', example: 5 })
   maxDay: number;
+
+  @ApiProperty({
+    description: '멤버별 코호트 (행=멤버, 열=Day0~)',
+    type: [MemberCohortRowResponse],
+  })
+  memberCohort: MemberCohortRowResponse[];
+
+  @ApiProperty({ description: '멤버별 코호트 최대 Day 수', example: 5 })
+  memberCohortMaxDay: number;
 }

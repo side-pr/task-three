@@ -8,6 +8,7 @@ import {
   DailyStatsResponse,
   CohortCellResponse,
   CohortRowResponse,
+  MemberCohortRowResponse,
   DashboardResponse,
 } from 'src/dto/dashboard-response.dto';
 
@@ -25,12 +26,21 @@ export class DashboardService {
   async getDashboard(): Promise<DashboardResponse> {
     const today = new Date().toISOString().split('T')[0];
 
-    const [dailyStats, cohort] = await Promise.all([
+    const [dailyStats, members, tasks, schedules] = await Promise.all([
       this.getDailyStats(today),
-      this.getCohort(today),
+      this.memberRepository.find(),
+      this.taskRepository.find({ relations: ['member'] }),
+      this.scheduleRepository.find({ relations: ['member'] }),
     ]);
 
+    const cohort = this.getCohort(members, tasks, schedules, today);
+    const memberCohort = this.getMemberCohort(members, tasks, schedules, today);
+
     const maxDay = cohort.reduce(
+      (max, row) => Math.max(max, row.days.length - 1),
+      0,
+    );
+    const memberCohortMaxDay = memberCohort.reduce(
       (max, row) => Math.max(max, row.days.length - 1),
       0,
     );
@@ -39,6 +49,8 @@ export class DashboardService {
     response.dailyStats = dailyStats;
     response.cohort = cohort;
     response.maxDay = maxDay;
+    response.memberCohort = memberCohort;
+    response.memberCohortMaxDay = memberCohortMaxDay;
 
     return response;
   }
@@ -64,13 +76,12 @@ export class DashboardService {
     );
   }
 
-  private async getCohort(today: string): Promise<CohortRowResponse[]> {
-    const [members, tasks, schedules] = await Promise.all([
-      this.memberRepository.find(),
-      this.taskRepository.find({ relations: ['member'] }),
-      this.scheduleRepository.find({ relations: ['member'] }),
-    ]);
-
+  private getCohort(
+    members: Member[],
+    tasks: Task[],
+    schedules: Schedule[],
+    today: string,
+  ): CohortRowResponse[] {
     // 멤버를 가입일(date only)별로 그룹핑
     const cohortMap = new Map<
       string,
@@ -78,9 +89,7 @@ export class DashboardService {
     >();
 
     for (const member of members) {
-      const signupDate = new Date(member.createdAt)
-        .toISOString()
-        .split('T')[0];
+      const signupDate = new Date(member.createdAt).toISOString().split('T')[0];
       if (!cohortMap.has(signupDate)) {
         cohortMap.set(signupDate, { memberIds: new Set(), memberCount: 0 });
       }
@@ -168,6 +177,73 @@ export class DashboardService {
     }
 
     return rows;
+  }
+
+  private getMemberCohort(
+    members: Member[],
+    tasks: Task[],
+    schedules: Schedule[],
+    today: string,
+  ): MemberCohortRowResponse[] {
+    const sorted = [...members].sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+
+    // member.id별 tasks/schedules Map 구축
+    const tasksByMember = new Map<number, Task[]>();
+    for (const task of tasks) {
+      if (!task.member) continue;
+      const id = task.member.id;
+      if (!tasksByMember.has(id)) tasksByMember.set(id, []);
+      tasksByMember.get(id)!.push(task);
+    }
+
+    const schedulesByMember = new Map<number, Schedule[]>();
+    for (const schedule of schedules) {
+      if (!schedule.member) continue;
+      const id = schedule.member.id;
+      if (!schedulesByMember.has(id)) schedulesByMember.set(id, []);
+      schedulesByMember.get(id)!.push(schedule);
+    }
+
+    return sorted.map((member, index) => {
+      const signupDate = new Date(member.createdAt).toISOString().split('T')[0];
+      const maxDayOffset = this.diffDays(signupDate, today);
+
+      const cells: CohortCellResponse[] = [];
+      for (let d = 0; d <= maxDayOffset; d++) {
+        const cell = new CohortCellResponse();
+        cell.taskRegistered = 0;
+        cell.taskCompleted = 0;
+        cell.scheduleRegistered = 0;
+        cell.scheduleCompleted = 0;
+        cells.push(cell);
+      }
+
+      const memberTasks = tasksByMember.get(member.id) ?? [];
+      for (const task of memberTasks) {
+        if (!task.targetDate) continue;
+        const dayOffset = this.diffDays(signupDate, task.targetDate);
+        if (dayOffset < 0 || dayOffset > maxDayOffset) continue;
+        cells[dayOffset].taskRegistered++;
+        if (task.isCompleted) cells[dayOffset].taskCompleted++;
+      }
+
+      const memberSchedules = schedulesByMember.get(member.id) ?? [];
+      for (const schedule of memberSchedules) {
+        const dayOffset = this.diffDays(signupDate, schedule.targetDate);
+        if (dayOffset < 0 || dayOffset > maxDayOffset) continue;
+        cells[dayOffset].scheduleRegistered++;
+        if (schedule.isCompleted) cells[dayOffset].scheduleCompleted++;
+      }
+
+      const row = new MemberCohortRowResponse();
+      row.label = `M${index + 1}`;
+      row.signupDate = signupDate;
+      row.days = cells;
+      return row;
+    });
   }
 
   private diffDays(from: string, to: string): number {
