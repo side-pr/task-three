@@ -58,8 +58,10 @@ export class ScheduleController {
     @Param('scheduleId') scheduleId: number,
     @Req() req: Request,
   ): Promise<ServiceApiResponse<ScheduleDetailResponse>> {
-    const scheduleDetailResponse =
-      await this.scheduleService.getDetail(scheduleId, req.member);
+    const scheduleDetailResponse = await this.scheduleService.getDetail(
+      scheduleId,
+      req.member,
+    );
     return ServiceApiResponse.success(HttpStatus.OK, scheduleDetailResponse);
   }
 
@@ -93,7 +95,11 @@ export class ScheduleController {
     @Body() scheduleCreateRequest: ScheduleCreateRequest,
     @Req() req: Request,
   ): Promise<ServiceApiResponse<{ scheduleId: number }>> {
-    await this.scheduleService.update(scheduleId, scheduleCreateRequest, req.member);
+    await this.scheduleService.update(
+      scheduleId,
+      scheduleCreateRequest,
+      req.member,
+    );
     return ServiceApiResponse.success(HttpStatus.CREATED, { scheduleId });
   }
 

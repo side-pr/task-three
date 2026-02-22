@@ -57,11 +57,13 @@ export class TaskService {
 
       // 중복 제거하여 합치기
       const taskIds = new Set<number>();
-      tasks = [...pastUncompletedTasks, ...todayCompletedTasks].filter((task) => {
-        if (taskIds.has(task.id)) return false;
-        taskIds.add(task.id);
-        return true;
-      });
+      tasks = [...pastUncompletedTasks, ...todayCompletedTasks].filter(
+        (task) => {
+          if (taskIds.has(task.id)) return false;
+          taskIds.add(task.id);
+          return true;
+        },
+      );
     } else {
       // 다른 날짜: 해당 날짜의 task만 조회
       tasks = await this.taskRepository.find({

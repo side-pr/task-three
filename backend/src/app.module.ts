@@ -3,10 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskController } from './controller/task.controller';
 import { ScheduleController } from './controller/schedule.controller';
+import { DashboardController } from './controller/dashboard.controller';
 import { SnakeNamingStrategy } from './config/naming-strategy';
 import { TaskService } from './service/task.service';
 import { Task } from './entities/task.entity';
 import { ScheduleService } from 'src/service/schedule.service';
+import { DashboardService } from './service/dashboard.service';
 import { Schedule } from './entities/schedule.entity';
 import { Member } from './entities/member.entity';
 import { MemberService } from './service/member.service';
@@ -40,8 +42,8 @@ import { VisitorMiddleware } from './middleware/visitor.middleware';
     }),
     TypeOrmModule.forFeature([Task, Schedule, Member]),
   ],
-  controllers: [TaskController, ScheduleController],
-  providers: [TaskService, ScheduleService, MemberService],
+  controllers: [TaskController, ScheduleController, DashboardController],
+  providers: [TaskService, ScheduleService, MemberService, DashboardService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

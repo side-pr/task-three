@@ -25,6 +25,7 @@ import { ScheduleCreateModal } from "@/pages/todos/ui/schedule-create-modal";
 import { ScheduleUpdateModal } from "@/pages/todos/ui/schedule-update-modal";
 import { ScheduleItem } from "@/pages/todos/api/schedule-get-list";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const getToday = () => new Date().toISOString().split("T")[0];
 
@@ -136,6 +137,14 @@ export const TodoPage = ({date}: {date: string}) => {
     >
       <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
         <div className="w-full h-full flex flex-col items-center gap-6  px-6">
+          <div className="w-full flex justify-end">
+            <Link
+              href="/dashboard"
+              className="text-sm text-blue-500 hover:text-blue-700 font-medium"
+            >
+              대시보드 &rarr;
+            </Link>
+          </div>
           <DateSelectSection
             selectedDate={selectedDate}
             onDateChange={(date) => {

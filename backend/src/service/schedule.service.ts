@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ScheduleCreateRequest } from 'src/dto/schedule-create-request.dto';
 import { ScheduleDetailResponse } from 'src/dto/schedule-detail-response.dto';
@@ -51,13 +55,14 @@ export class ScheduleService {
 
       // 중복 제거하여 합치기
       const scheduleIds = new Set<number>();
-      schedules = [...pastUncompletedSchedules, ...todayCompletedSchedules].filter(
-        (schedule) => {
-          if (scheduleIds.has(schedule.id)) return false;
-          scheduleIds.add(schedule.id);
-          return true;
-        },
-      );
+      schedules = [
+        ...pastUncompletedSchedules,
+        ...todayCompletedSchedules,
+      ].filter((schedule) => {
+        if (scheduleIds.has(schedule.id)) return false;
+        scheduleIds.add(schedule.id);
+        return true;
+      });
 
       // 시작 시간순 정렬
       schedules.sort((a, b) => a.startTime.localeCompare(b.startTime));
@@ -159,7 +164,10 @@ export class ScheduleService {
     await this.scheduleRepository.save(schedule);
   }
 
-  async getDetail(scheduleId: number, member?: Member): Promise<ScheduleDetailResponse> {
+  async getDetail(
+    scheduleId: number,
+    member?: Member,
+  ): Promise<ScheduleDetailResponse> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id: scheduleId },
       relations: ['member', 'task'],
@@ -232,7 +240,9 @@ export class ScheduleService {
       throw new NotFoundException('스케줄을 찾을 수 없습니다.');
     }
     if (member && schedule.member?.id !== member.id) {
-      throw new ForbiddenException('해당 스케줄의 완료를 취소할 권한이 없습니다.');
+      throw new ForbiddenException(
+        '해당 스케줄의 완료를 취소할 권한이 없습니다.',
+      );
     }
     schedule.isCompleted = false;
     schedule.completedAt = null;
