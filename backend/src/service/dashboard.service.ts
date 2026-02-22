@@ -207,11 +207,17 @@ export class DashboardService {
       schedulesByMember.get(id)!.push(schedule);
     }
 
-    const baseDate = '2026-02-06';
+    const minDate = '2026-02-06';
+    const filtered = sorted.filter((m) => {
+      const d = new Date(m.createdAt).toISOString().split('T')[0];
+      return d >= minDate;
+    });
 
-    return sorted.map((member, index) => {
-      const signupDate = new Date(member.createdAt).toISOString().split('T')[0];
-      const maxDayOffset = this.diffDays(baseDate, today);
+    return filtered.map((member, index) => {
+      const signupDate = new Date(member.createdAt)
+        .toISOString()
+        .split('T')[0];
+      const maxDayOffset = this.diffDays(signupDate, today);
 
       const cells: CohortCellResponse[] = [];
       for (let d = 0; d <= maxDayOffset; d++) {
@@ -226,7 +232,7 @@ export class DashboardService {
       const memberTasks = tasksByMember.get(member.id) ?? [];
       for (const task of memberTasks) {
         if (!task.targetDate) continue;
-        const dayOffset = this.diffDays(baseDate, task.targetDate);
+        const dayOffset = this.diffDays(signupDate, task.targetDate);
         if (dayOffset < 0 || dayOffset > maxDayOffset) continue;
         cells[dayOffset].taskRegistered++;
         if (task.isCompleted) cells[dayOffset].taskCompleted++;
@@ -234,14 +240,21 @@ export class DashboardService {
 
       const memberSchedules = schedulesByMember.get(member.id) ?? [];
       for (const schedule of memberSchedules) {
-        const dayOffset = this.diffDays(baseDate, schedule.targetDate);
+        const dayOffset = this.diffDays(signupDate, schedule.targetDate);
         if (dayOffset < 0 || dayOffset > maxDayOffset) continue;
         cells[dayOffset].scheduleRegistered++;
         if (schedule.isCompleted) cells[dayOffset].scheduleCompleted++;
       }
 
       const row = new MemberCohortRowResponse();
-      const nameMap: Record<number, string> = { 12: '현명', 52: '성수', 248: 'interview', 253: 'interview', 254: 'interview', 289: 'interview' };
+      const nameMap: Record<number, string> = {
+        12: '현명',
+        52: '성수',
+        248: 'interview',
+        253: 'interview',
+        254: 'interview',
+        289: 'interview',
+      };
       const name = nameMap[member.id];
       row.label = name ? `M${index + 1} (${name})` : `M${index + 1}`;
       row.signupDate = signupDate;
