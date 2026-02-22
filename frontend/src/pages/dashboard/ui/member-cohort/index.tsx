@@ -1,56 +1,62 @@
-import type { CohortRow } from "@/pages/dashboard/api/dashboard-get";
+import type { MemberCohortRow } from "@/pages/dashboard/api/dashboard-get";
 import { CohortTable } from "@/pages/dashboard/ui/cohort-table";
 
-type DailyCohortProps = {
-  cohort: CohortRow[];
-  maxDay: number;
+type MemberCohortProps = {
+  memberCohort: MemberCohortRow[];
+  memberCohortMaxDay: number;
 };
 
-export const DailyCohort = ({ cohort, maxDay }: DailyCohortProps) => {
-  const dayHeaders = Array.from({ length: maxDay + 1 }, (_, i) => `D${i}`);
+export const MemberCohort = ({
+  memberCohort,
+  memberCohortMaxDay,
+}: MemberCohortProps) => {
+  const dayHeaders = Array.from(
+    { length: memberCohortMaxDay + 1 },
+    (_, i) => `D${i}`,
+  );
 
   return (
     <div className="w-full rounded-2xl bg-gray-50 p-4 flex flex-col gap-6">
-      <h2 className="text-sm font-semibold text-gray-700">일별 코호트</h2>
+      <h2 className="text-sm font-semibold text-gray-700">멤버별 코호트</h2>
 
       <CohortTable
         label="Task"
         labelColor="text-blue-600"
         activeCellClass="text-blue-700 bg-blue-50"
-        rows={cohort}
+        rows={memberCohort}
         columns={[
           {
-            header: "가입일",
+            header: "멤버",
             sticky: true,
-            render: (row) => row.date.slice(5),
+            render: (row) => row.label,
           },
-          { header: "유저", render: (row) => row.memberCount },
+          { header: "가입일", render: (row) => row.signupDate.slice(5) },
         ]}
         dayHeaders={dayHeaders}
         getDays={(row) => row.days}
         getRegistered={(c) => c.taskRegistered}
         getCompleted={(c) => c.taskCompleted}
-        rowKey={(row) => row.date}
+        rowKey={(row) => row.label}
       />
 
       <CohortTable
         label="Schedule"
         labelColor="text-green-600"
         activeCellClass="text-green-700 bg-green-50"
-        rows={cohort}
+        rows={memberCohort}
         columns={[
           {
-            header: "가입일",
+            header: "멤버",
             sticky: true,
-            render: (row) => row.date.slice(5),
+            render: (row) => row.label,
           },
-          { header: "유저", render: (row) => row.memberCount },
+          { header: "가입일", render: (row) => row.signupDate.slice(5) },
         ]}
         dayHeaders={dayHeaders}
         getDays={(row) => row.days}
         getRegistered={(c) => c.scheduleRegistered}
         getCompleted={(c) => c.scheduleCompleted}
-        rowKey={(row) => row.date}
+        rowKey={(row) => row.label}
       />
 
       <div className="text-[10px] text-gray-500">

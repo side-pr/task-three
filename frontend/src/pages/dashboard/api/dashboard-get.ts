@@ -22,10 +22,18 @@ export interface CohortRow {
   days: CohortCell[];
 }
 
+export interface MemberCohortRow {
+  label: string;
+  signupDate: string;
+  days: CohortCell[];
+}
+
 export interface DashboardGetResponse {
   dailyStats: DailyStats;
   cohort: CohortRow[];
   maxDay: number;
+  memberCohort: MemberCohortRow[];
+  memberCohortMaxDay: number;
 }
 
 export const dashboardGet = async () => {
