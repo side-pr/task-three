@@ -26,12 +26,22 @@ export class DashboardService {
   async getDashboard(): Promise<DashboardResponse> {
     const today = new Date().toISOString().split('T')[0];
 
-    const [dailyStats, members, tasks, schedules] = await Promise.all([
+    const excludeIds = new Set([248, 253, 254, 289]);
+
+    const [dailyStats, allMembers, allTasks, allSchedules] = await Promise.all([
       this.getDailyStats(today),
       this.memberRepository.find(),
       this.taskRepository.find({ relations: ['member'] }),
       this.scheduleRepository.find({ relations: ['member'] }),
     ]);
+
+    const members = allMembers.filter((m) => !excludeIds.has(m.id));
+    const tasks = allTasks.filter(
+      (t) => !t.member || !excludeIds.has(t.member.id),
+    );
+    const schedules = allSchedules.filter(
+      (s) => !s.member || !excludeIds.has(s.member.id),
+    );
 
     const cohort = this.getCohort(members, tasks, schedules, today);
     const memberCohort = this.getMemberCohort(members, tasks, schedules, today);
