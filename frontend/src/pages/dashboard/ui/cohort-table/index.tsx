@@ -14,7 +14,7 @@ type CohortTableProps<T> = {
   rows: T[];
   columns: Column<T>[];
   dayHeaders: string[];
-  getDays: (row: T) => (CohortCell | null)[];
+  getDays: (row: T) => CohortCell[];
   getRegistered: (cell: CohortCell) => number;
   getCompleted: (cell: CohortCell) => number;
   rowKey: (row: T) => string;

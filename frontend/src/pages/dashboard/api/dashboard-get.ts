@@ -25,7 +25,7 @@ export interface CohortRow {
 export interface MemberCohortRow {
   label: string;
   signupDate: string;
-  days: (CohortCell | null)[];
+  days: CohortCell[];
 }
 
 export interface DashboardGetResponse {
