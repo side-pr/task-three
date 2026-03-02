@@ -1,3 +1,5 @@
+export { default as ArrowDownIcon } from './ArrowDownIcon'
+export { default as ArrowUpIcon } from './ArrowUpIcon'
 export { default as CheckIcon } from './CheckIcon'
 export { default as PenIcon } from './PenIcon'
 export { default as PlusIcon } from './PlusIcon'
