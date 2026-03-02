@@ -19,24 +19,15 @@ import { scheduleMoveToTodoList } from "@/pages/todos/api/schedule-move-to-todo-
 import { scheduleComplete } from "@/pages/todos/api/schedule-complete";
 import { scheduleCancelComplete } from "@/pages/todos/api/schedule-cancel-complete";
 import { scheduleUpdate } from "@/pages/todos/api/schedule-update";
-import { DndProvider } from "@shared/ui";
 import { overlay } from "overlay-kit";
 import { ScheduleCreateModal } from "@/pages/todos/ui/schedule-create-modal";
 import { ScheduleUpdateModal } from "@/pages/todos/ui/schedule-update-modal";
 import { ScheduleItem } from "@/pages/todos/api/schedule-get-list";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 const getToday = () => new Date().toISOString().split("T")[0];
 
 const isPastDate = (date: string) => date < getToday();
-
-type DragData = {
-  scheduleId?: number;
-  taskId: number;
-  taskName: string;
-  isCompleted: boolean;
-};
 
 export const TodoPage = ({ date }: { date: string }) => {
   const selectedDate = date ?? getToday();
@@ -101,106 +92,91 @@ export const TodoPage = ({ date }: { date: string }) => {
     ));
   };
 
-  const handleDragEnd = (data: DragData, overId: string | null) => {
-    // todo -> must-todo: schedule 생성
-    if (overId === "must-todo-section" && !data.scheduleId) {
-      overlay.open(({ isOpen, close }) => (
-        <ScheduleCreateModal
-          isOpen={isOpen}
-          close={close}
-          todoName={data.taskName}
-          onConfirm={(formData) => {
-            createSchedule({
-              taskId: data.taskId,
-              startTime: formData.startTime + ":00",
-              endTime: formData.endTime + ":00",
-              targetDate: selectedDate,
-            });
-            close();
-          }}
-        />
-      ));
-    }
+  const handleMoveToSchedule = (taskId: number, taskName: string) => {
+    overlay.open(({ isOpen, close }) => (
+      <ScheduleCreateModal
+        isOpen={isOpen}
+        close={close}
+        todoName={taskName}
+        onConfirm={(formData) => {
+          createSchedule({
+            taskId,
+            startTime: formData.startTime + ":00",
+            endTime: formData.endTime + ":00",
+            targetDate: selectedDate,
+          });
+          close();
+        }}
+      />
+    ));
+  };
 
-    // must-todo -> todo: 할 일 목록으로 이동
-    if (overId === "todo-section" && data.scheduleId) {
-      moveScheduleToTodoList({ scheduleId: data.scheduleId });
-    }
+  const handleMoveToTodoList = (scheduleId: number) => {
+    moveScheduleToTodoList({ scheduleId });
   };
 
   return (
-    <DndProvider<DragData>
-      onDragEnd={handleDragEnd}
-      renderOverlay={(activeItem) =>
-        activeItem ? (
-          <div className="w-full h-11 rounded-2xl text-gray-950 py-3 bg-gray-200 flex items-center justify-between px-4 cursor-grabbing shadow-lg">
-            <span className="text-body1 text-gray-950 font-regular">
-              {activeItem.taskName}
-            </span>
-          </div>
-        ) : null
-      }
-    >
-      <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
-        <div className="w-full h-full flex flex-col items-center gap-6  px-6">
-          <DateSelectSection
-            selectedDate={selectedDate}
-            onDateChange={(date) => {
-              router.push(`?date=${date}`);
-            }}
-          />
+    <main className="w-full min-w-[360px] h-full flex flex-col items-center pt-4">
+      <div className="w-full h-full flex flex-col items-center gap-6  px-6">
+        <DateSelectSection
+          selectedDate={selectedDate}
+          onDateChange={(date) => {
+            router.push(`?date=${date}`);
+          }}
+        />
 
-          <div className="w-full flex flex-col gap-6">
-            <SuspenseQuery {...scheduleQueries.list(selectedDate)}>
-              {({ data: scheduleItems }) => (
-                <>
-                  <MustTodoSection
-                    scheduleItems={scheduleItems}
-                    onDelete={(scheduleId) => deleteSchedule({ scheduleId })}
-                    onUpdate={handleScheduleUpdate}
-                    onComplete={(scheduleId) =>
-                      completeSchedule({ scheduleId })
-                    }
-                    onCancelComplete={(scheduleId) =>
-                      cancelCompleteSchedule({ scheduleId })
-                    }
-                  />
+        <div className="w-full flex flex-col gap-6">
+          <SuspenseQuery {...scheduleQueries.list(selectedDate)}>
+            {({ data: scheduleItems }) => (
+              <>
+                <MustTodoSection
+                  scheduleItems={scheduleItems}
+                  onDelete={(scheduleId) => deleteSchedule({ scheduleId })}
+                  onUpdate={handleScheduleUpdate}
+                  onComplete={(scheduleId) =>
+                    completeSchedule({ scheduleId })
+                  }
+                  onCancelComplete={(scheduleId) =>
+                    cancelCompleteSchedule({ scheduleId })
+                  }
+                  onMoveToTodoList={handleMoveToTodoList}
+                />
 
-                  <SuspenseQuery {...todoQueries.list(selectedDate)}>
-                    {({ data: todoItems }) => (
-                      <TodoSection
-                        todoItems={todoItems}
-                        isPastDate={isPastDate(selectedDate)}
-                        scheduleCount={scheduleItems.schedules?.length ?? 0}
-                        onCreate={(formData: { name: string }) =>
-                          createTodo({ ...formData, targetDate: selectedDate })
-                        }
-                        onUpdate={(
-                          todoId: number,
-                          formData: { name: string },
-                        ) =>
-                          updateTodo({
-                            pathParams: { taskId: todoId },
-                            formData,
-                          })
-                        }
-                        onDelete={(todoId) => deleteTodo({ taskId: todoId })}
-                        onComplete={(todoId) =>
-                          completeTodo({ taskId: todoId })
-                        }
-                        onCancelComplete={(todoId) =>
-                          cancelCompleteTodo({ taskId: todoId })
-                        }
-                      />
-                    )}
-                  </SuspenseQuery>
-                </>
-              )}
-            </SuspenseQuery>
-          </div>
+                <SuspenseQuery {...todoQueries.list(selectedDate)}>
+                  {({ data: todoItems }) => (
+                    <TodoSection
+                      todoItems={todoItems}
+                      isPastDate={isPastDate(selectedDate)}
+                      scheduleCount={scheduleItems.schedules?.length ?? 0}
+                      onCreate={(formData: { name: string }) =>
+                        createTodo({ ...formData, targetDate: selectedDate })
+                      }
+                      onUpdate={(
+                        todoId: number,
+                        formData: { name: string },
+                      ) =>
+                        updateTodo({
+                          pathParams: { taskId: todoId },
+                          formData,
+                        })
+                      }
+                      onDelete={(todoId) => deleteTodo({ taskId: todoId })}
+                      onComplete={(todoId) =>
+                        completeTodo({ taskId: todoId })
+                      }
+                      onCancelComplete={(todoId) =>
+                        cancelCompleteTodo({ taskId: todoId })
+                      }
+                      onMoveToSchedule={handleMoveToSchedule}
+                    />
+                  )}
+                </SuspenseQuery>
+              </>
+            )}
+          </SuspenseQuery>
         </div>
-      </main>
-    </DndProvider>
+      </div>
+    </main>
   );
 };
 const todoUpdateMutationOptions = (date: string) => {

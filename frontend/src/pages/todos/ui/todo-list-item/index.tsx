@@ -5,7 +5,7 @@ import { TodoItem } from "@/pages/todos/api/todo-get-list";
 import { TodoDeleteModal } from "@/pages/todos/ui/todo-delete-modal";
 import { TodoUpdateModal } from "@/pages/todos/ui/todo-update-modal";
 import { cn } from "@shared/lib/style";
-import { CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon, PenIcon, TrashIcon } from "@shared/ui/icons";
 import { overlay } from "overlay-kit";
 import React from "react";
 
@@ -15,6 +15,7 @@ type BaseProps = {
   onUpdate: (formData: { name: string }) => void;
   onEdit?: () => void;
   onToggleComplete: () => void;
+  onMove?: () => void;
   className?: string;
 } & React.HTMLAttributes<HTMLLIElement>;
 
@@ -30,6 +31,7 @@ export const TodoListItem = React.forwardRef<HTMLLIElement, TodoListItemProps>(
       onUpdate,
       onEdit,
       onToggleComplete,
+      onMove,
       className,
       isMust,
       ...restProps
@@ -93,6 +95,18 @@ export const TodoListItem = React.forwardRef<HTMLLIElement, TodoListItemProps>(
             </span>
           </button>
           <div className="flex items-center gap-6">
+            {onMove && (
+              <button
+                className="w-5 h-5 flex items-center justify-center"
+                onClick={onMove}
+              >
+                {isMust ? (
+                  <ArrowDownIcon className="w-5 h-5 text-gray-950" />
+                ) : (
+                  <ArrowUpIcon className="w-5 h-5 text-gray-950" />
+                )}
+              </button>
+            )}
             <button
               className="w-5 h-5 flex items-center justify-center"
               onClick={() => {
