@@ -2,6 +2,7 @@
 import {ReactQueryProvider } from "@app/providers";
 import "@app/styles/globals.css";
 import "@app/styles/font.css";
+import { MaintenanceScreen, isUnderMaintenance } from "@shared/ui";
 import { Metadata, Viewport } from "next";
 import { OverlayProvider } from "overlay-kit";
 
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
   title: "Task Three",
   description: "Task Three",
 };
+
+export const dynamic = "force-dynamic";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -22,6 +25,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const maintenance = isUnderMaintenance();
   return (
     <html lang="ko">
       <body className={`font-pretendard`}>
@@ -29,7 +33,7 @@ export default function RootLayout({
           <OverlayProvider>
             <div id="modal-root"></div>
             <div className="w-full h-full flex flex-col items-center">
-              {children}
+              {maintenance ? <MaintenanceScreen /> : children}
             </div>
           </OverlayProvider>
         </ReactQueryProvider>
