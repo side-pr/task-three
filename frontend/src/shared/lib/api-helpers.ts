@@ -6,7 +6,11 @@ export function log(route: string, msg: string, data?: unknown) {
 }
 
 export function logError(route: string, msg: string, err: unknown) {
-  console.error(`[${route}] ${msg}`, err instanceof Error ? err.message : String(err));
+  const detail =
+    err instanceof Error
+      ? `${err.name}: ${err.message}\n${err.stack ?? ''}`
+      : String(err);
+  console.error(`[${route}] ${msg}\n${detail}`);
 }
 
 export function apiSuccess<T>(data: T, status = 200) {

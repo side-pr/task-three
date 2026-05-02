@@ -15,6 +15,7 @@ import {
 export async function GET(req: NextRequest) {
   const date = req.nextUrl.searchParams.get('date');
   log('GET /api/schedules', `요청 date=${date}`);
+  console.log('[ENV] DATABASE_URL 설정 여부:', !!process.env.DATABASE_URL);
 
   if (!date) return apiError('GET /api/schedules', 'date query param is required', 400);
 
