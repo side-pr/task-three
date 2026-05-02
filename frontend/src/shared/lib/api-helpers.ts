@@ -1,23 +1,42 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@shared/lib/prisma';
 
+export function log(route: string, msg: string, data?: unknown) {
+  console.log(`[${route}] ${msg}`, data !== undefined ? JSON.stringify(data) : '');
+}
+
+export function logError(route: string, msg: string, err: unknown) {
+  console.error(`[${route}] ${msg}`, err instanceof Error ? err.message : String(err));
+}
+
 export function apiSuccess<T>(data: T, status = 200) {
   return NextResponse.json({ status, message: 'success', data }, { status });
 }
 
-export function apiError(message: string, status: number) {
+export function apiError(route: string, message: string, status: number) {
+  console.error(`[${route}] ${status} ${message}`);
   return NextResponse.json({ status, message, data: null }, { status });
 }
 
-export async function getMemberFromHeader(headers: Headers) {
+export async function getMemberFromHeader(headers: Headers, route: string) {
   const visitorId = headers.get('x-visitor-id');
-  if (!visitorId) return null;
+  if (!visitorId) {
+    console.log(`[${route}] x-visitor-id header 없음`);
+    return null;
+  }
 
-  return prisma.member.upsert({
-    where: { socialType_providerId: { socialType: 'VISITOR', providerId: visitorId } },
-    create: { socialType: 'VISITOR', providerId: visitorId },
-    update: {},
-  });
+  try {
+    const member = await prisma.member.upsert({
+      where: { socialType_providerId: { socialType: 'VISITOR', providerId: visitorId } },
+      create: { socialType: 'VISITOR', providerId: visitorId },
+      update: {},
+    });
+    console.log(`[${route}] member resolved: id=${member.id} visitorId=${visitorId}`);
+    return member;
+  } catch (err) {
+    console.error(`[${route}] member upsert 실패 visitorId=${visitorId}`, err instanceof Error ? err.message : String(err));
+    throw err;
+  }
 }
 
 export function parseDate(dateStr: string): Date {
