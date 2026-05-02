@@ -1,0 +1,21 @@
+import { NextRequest } from 'next/server';
+import { prisma } from '@shared/lib/prisma';
+import { apiSuccess, apiError, getMemberFromHeader } from '@shared/lib/api-helpers';
+
+type Params = { params: Promise<{ scheduleId: string }> };
+
+export async function PUT(req: NextRequest, { params }: Params) {
+  const { scheduleId } = await params;
+  const member = await getMemberFromHeader(req.headers);
+
+  const schedule = await prisma.schedule.findUnique({ where: { id: Number(scheduleId) } });
+  if (!schedule) return apiError('스케줄을 찾을 수 없습니다.', 404);
+  if (member && schedule.memberId !== member.id) return apiError('권한이 없습니다.', 403);
+
+  await prisma.schedule.update({
+    where: { id: Number(scheduleId) },
+    data: { isCompleted: false, completedAt: null },
+  });
+
+  return apiSuccess(null, 204);
+}

@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Member {
+  id         Int        @id @default(autoincrement())
+  socialType String     @map("social_type") @db.VarChar
+  providerId String     @map("provider_id") @db.VarChar(255)
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  tasks      Task[]
+  schedules  Schedule[]
+
+  @@unique([socialType, providerId])
+  @@map("member")
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(20)
+  targetDate  DateTime? @map("target_date") @db.Date
+  isCompleted Boolean   @default(false) @map("is_completed")
+  completedAt DateTime? @map("completed_at") @db.Date
+  memberId    Int?      @map("member_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  member      Member?   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  schedule    Schedule?
+
+  @@map("task")
+}
+
+model Schedule {
+  id          Int       @id @default(autoincrement())
+  startTime   DateTime  @map("start_time") @db.Time(6)
+  endTime     DateTime  @map("end_time") @db.Time(6)
+  targetDate  DateTime  @map("target_date") @db.Date
+  isCompleted Boolean   @default(false) @map("is_completed")
+  completedAt DateTime? @map("completed_at") @db.Date
+  taskId      Int?      @unique @map("task_id")
+  memberId    Int?      @map("member_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  task        Task?     @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  member      Member?   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@map("schedule")
+}

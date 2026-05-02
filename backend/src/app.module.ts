@@ -32,7 +32,7 @@ import { VisitorMiddleware } from './middleware/visitor.middleware';
         logging: configService.get('TYPEORM_LOGGING') === 'true',
         namingStrategy: new SnakeNamingStrategy(),
         ssl:
-          configService.get('NODE_ENV') === 'production'
+          configService.get('DB_SSL') === 'true'
             ? { rejectUnauthorized: false }
             : false,
       }),
