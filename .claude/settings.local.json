@@ -40,7 +40,31 @@
       "mcp__supabase__get_cost",
       "mcp__supabase__confirm_cost",
       "mcp__supabase__create_project",
-      "mcp__supabase__apply_migration"
+      "mcp__supabase__apply_migration",
+      "Bash(vercel whoami *)",
+      "Bash(npm view *)",
+      "Bash(npm search *)",
+      "Bash(git show *)",
+      "Read(//Users/songhyeonmyeong/**)",
+      "Bash(mkdir -p \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/tasks/[taskId]/complete\")",
+      "Bash(mkdir -p \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/tasks/[taskId]/cancel-complete\")",
+      "Bash(mkdir -p \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/schedules/[scheduleId]/complete\")",
+      "Bash(mkdir -p \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/schedules/[scheduleId]/cancel-complete\")",
+      "Bash(mkdir -p \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/schedules/[scheduleId]/move-to-todo-list\")",
+      "Bash(cp \"/Users/songhyeonmyeong/Desktop/task-three/frontend/src/app/api/internal/api/tasks/[taskId]/route.ts\" \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/tasks/[taskId]/route.ts\")",
+      "Bash(cp \"/Users/songhyeonmyeong/Desktop/task-three/frontend/src/app/api/internal/api/tasks/[taskId]/complete/route.ts\" \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/tasks/[taskId]/complete/route.ts\")",
+      "Bash(cp \"/Users/songhyeonmyeong/Desktop/task-three/frontend/src/app/api/internal/api/tasks/[taskId]/cancel-complete/route.ts\" \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/tasks/[taskId]/cancel-complete/route.ts\")",
+      "Bash(cp \"/Users/songhyeonmyeong/Desktop/task-three/frontend/src/app/api/internal/api/schedules/[scheduleId]/route.ts\" \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/schedules/[scheduleId]/route.ts\")",
+      "Bash(cp \"/Users/songhyeonmyeong/Desktop/task-three/frontend/src/app/api/internal/api/schedules/[scheduleId]/complete/route.ts\" \"/Users/songhyeonmyeong/Desktop/task-three/frontend/app/api/internal/api/schedules/[scheduleId]/complete/route.ts\")",
+      "Bash(git commit *)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "mcp__supabase__get_project",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__get_publishable_keys"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "vercel"
+  ]
 }
